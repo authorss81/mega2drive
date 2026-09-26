@@ -52,8 +52,28 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 BASE_DIR = Path(__file__).resolve().parent
-CONFIG_PATH = BASE_DIR / "config_drive_source.yaml"
+
+# See the matching block in mega_to_youtube.py. Setting these keeps the real
+# config and OAuth files outside the repo, so nothing holding a credential is
+# ever inside the project folder:
+#
+#   MEGA2DRIVE_CONFIG       absolute path to config_drive_source.yaml
+#   MEGA2DRIVE_CREDENTIALS  absolute path to the folder holding the JSON files
+#
+# Unset in GitHub Actions: the workflow writes config_drive_source.yaml and
+# credentials/ into the runner's own checkout, which dies with the job.
+CREDENTIALS_DIR = os.environ.get("MEGA2DRIVE_CREDENTIALS") or ""
+CONFIG_PATH = Path(os.environ.get("MEGA2DRIVE_CONFIG")
+                   or (BASE_DIR / "config_drive_source.yaml"))
 LOG_PATH = BASE_DIR / "logs" / "run_drive_source.log"
+
+
+def _resolve(configured_path):
+    """Resolve a config-declared path against the credentials dir override."""
+    p = Path(configured_path)
+    if p.is_absolute() or not CREDENTIALS_DIR:
+        return BASE_DIR / p
+    return CREDENTIALS_DIR / p
 
 DRIVE_SOURCE_SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 YOUTUBE_SCOPES = ["https://www.googleapis.com/auth/youtube.upload",
@@ -107,7 +127,8 @@ def log(msg, prefix=""):
 
 def load_config():
     if not CONFIG_PATH.exists():
-        log(f"ERROR: {CONFIG_PATH} not found. Copy config_drive_source.yaml.template and fill it in.")
+        log(f"ERROR: {CONFIG_PATH} not found. Copy config_drive_source.yaml.template, fill it "
+            f"in, or set MEGA2DRIVE_CONFIG to its location.")
         sys.exit(1)
     with open(CONFIG_PATH) as f:
         config = yaml.safe_load(f)
@@ -240,8 +261,8 @@ class QuotaExceeded(Exception):
 
 def get_google_client(cfg, scopes, service, version, authorize_only=False):
     creds = None
-    token_path = BASE_DIR / cfg["token_file"]
-    secret_path = BASE_DIR / cfg["client_secret_file"]
+    token_path = _resolve(cfg["token_file"])
+    secret_path = _resolve(cfg["client_secret_file"])
 
     if token_path.exists():
         creds = Credentials.from_authorized_user_file(str(token_path), scopes)

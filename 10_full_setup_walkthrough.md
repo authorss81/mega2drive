@@ -84,6 +84,27 @@ git status --short          # config.yaml must NOT appear
 git check-ignore -v config.yaml
 ```
 
+> **Want the credentials out of this folder entirely?**
+> `.gitignore` only stops them reaching GitHub — a tool running inside the
+> project folder can still read them. To put them genuinely out of scope, keep
+> the config somewhere else and point the scripts at it:
+>
+> ```powershell
+> $env:MEGA2DRIVE_CONFIG      = "C:\Users\USER\.secrets\mega2drive\config.yaml"
+> $env:MEGA2DRIVE_CREDENTIALS = "C:\Users\USER\.secrets\mega2drive\credentials"
+> ```
+>
+> Nothing holding a credential then needs to exist inside the repo. Add those
+> two lines to `$PROFILE` to make them permanent.
+>
+> **To ask for help with your config, share a masked copy** rather than the
+> file — passwords, tokens, and addresses come out redacted while the
+> structure stays readable:
+>
+> ```powershell
+> python guard_secrets.py --show config.yaml
+> ```
+
 ### Every field in `config.yaml`
 
 #### `allowed_extensions`

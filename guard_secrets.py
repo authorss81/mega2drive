@@ -37,6 +37,7 @@ in a committed file.
 """
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -199,11 +200,70 @@ def scan_text(path, text, findings):
                          m.group(0)[:20] + "... - credential-shaped string"))
 
 
+def mask_file(path):
+    """Print a file with every credential value masked, so its structure can be
+    shared (in a chat, an issue, a bug report) without exposing the secrets.
+
+    This is the safe way to ask for help with a config: run this, paste the
+    output, and every password, token, client secret, and account address comes
+    out as [redacted] while the keys, nesting, and non-secret values such as
+    folder_id stay readable.
+    """
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            text = f.read()
+    except FileNotFoundError:
+        print(f"No such file: {path}")
+        return 1
+
+    # Value keys that are always secret, matched on substring so that prefixed
+    # variants (mega_accounts_default_password) are caught too.
+    SECRET_KEY_PARTS = ("password", "passwd", "pwd", "passphrase", "token",
+                        "client_secret", "api_key", "secret")
+    # Keys whose value is an account address rather than a credential.
+    EMAIL_KEYS = ("email", "email_pattern", "default_email")
+
+    # Looser than EMAIL: allows {n} so a pattern like realbase+{n}@gmail.com
+    # still matches and still gets masked.
+    loose_email = re.compile(r"[A-Za-z0-9._%+\-{}\[\]]+@[A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)+")
+
+    # Suffixes whose values are locations or identifiers rather than secrets.
+    # client_secret_file and token_file hold paths; seeing them is the whole
+    # point when a config is misconfigured.
+    PATH_SUFFIXES = ("_file", "_path", "_dir", "_id")
+
+    out = []
+    for line in text.splitlines():
+        m = re.match(r"^(\s*(?:-?\s*)?)([A-Za-z0-9_.\-]+)(\s*:\s*)(.*)$", line)
+        if m and m.group(4).strip():
+            indent, key, sep, val = m.group(1), m.group(2), m.group(3), m.group(4)
+            low = key.lower()
+            is_path = low.endswith(PATH_SUFFIXES)
+            if any(p in low for p in SECRET_KEY_PARTS) and not is_path:
+                line = f"{indent}{key}{sep}[redacted]"
+            elif any(low == k or low.endswith("_" + k) for k in EMAIL_KEYS) and not is_path:
+                line = f"{indent}{key}{sep}[redacted-email]"
+            else:
+                line = TOKEN.sub("[redacted-token]", loose_email.sub("[redacted-email]", line))
+        out.append(line)
+
+    print(f"--- {os.path.basename(path)} (secrets masked) ---")
+    print("\n".join(out))
+    print("--- end ---")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description="Block credentials entering a public repo.")
     ap.add_argument("--staged", action="store_true",
                     help="only scan what is staged for commit (pre-commit hook)")
+    ap.add_argument("--show", metavar="FILE", nargs="?",
+                    help="print a config file with all secret values masked, "
+                         "so it is safe to share")
     args = ap.parse_args()
+
+    if args.show:
+        return mask_file(args.show)
 
     blobs = staged_blobs() if args.staged else head_blobs()
     if not blobs:

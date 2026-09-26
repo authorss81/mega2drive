@@ -43,6 +43,7 @@ sent anywhere except MEGA's and Google's own APIs.
 import argparse
 import csv
 import json
+import os
 import re
 import subprocess
 import sys
@@ -59,7 +60,35 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
 BASE_DIR = Path(__file__).resolve().parent
-CONFIG_PATH = BASE_DIR / "config.yaml"
+
+# Where the config and the OAuth credentials live.
+#
+# Both can be moved OUTSIDE this repo with environment variables:
+#
+#   MEGA2DRIVE_CONFIG       absolute path to config.yaml
+#   MEGA2DRIVE_CREDENTIALS  absolute path to the folder holding the
+#                           client_secret_*.json / token_*.json files
+#
+# Why that matters: this repo is public, and a tool working inside the project
+# folder (an AI assistant, a script, a backup tool) can read any file inside
+# it. Keeping the real credentials outside the folder means they are never in
+# scope at all, rather than merely gitignored. The filenames inside the config
+# are then resolved against MEGA2DRIVE_CREDENTIALS when it is set, and against
+# the repo directory otherwise.
+#
+# In GitHub Actions neither variable is set: the workflow writes
+# config.yaml and credentials/ into the runner's own checkout, which is
+# destroyed when the job ends.
+def _resolve(configured_path):
+    """Resolve a config-declared path against the credentials dir override."""
+    p = Path(configured_path)
+    if p.is_absolute() or not CREDENTIALS_DIR:
+        return BASE_DIR / p
+    return CREDENTIALS_DIR / p
+
+
+CREDENTIALS_DIR = os.environ.get("MEGA2DRIVE_CREDENTIALS") or ""
+CONFIG_PATH = Path(os.environ.get("MEGA2DRIVE_CONFIG") or (BASE_DIR / "config.yaml"))
 LOG_PATH = BASE_DIR / "logs" / "run.log"
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload",
           "https://www.googleapis.com/auth/youtube"]
@@ -185,7 +214,8 @@ def expand_accounts(entries, default_password=None, default_alias_prefix="mega_a
 
 def load_config():
     if not CONFIG_PATH.exists():
-        log(f"ERROR: config.yaml not found at {CONFIG_PATH}. Copy config.yaml.template to config.yaml and fill it in.")
+        log(f"ERROR: config not found at {CONFIG_PATH}. Copy config.yaml.template to config.yaml "
+            f"and fill it in, or set MEGA2DRIVE_CONFIG to its location.")
         sys.exit(1)
     with open(CONFIG_PATH) as f:
         config = yaml.safe_load(f)
@@ -316,8 +346,8 @@ class QuotaExceeded(Exception):
 
 def get_youtube_client(channel_cfg, authorize_only=False):
     creds = None
-    token_path = BASE_DIR / channel_cfg["token_file"]
-    secret_path = BASE_DIR / channel_cfg["client_secret_file"]
+    token_path = _resolve(channel_cfg["token_file"])
+    secret_path = _resolve(channel_cfg["client_secret_file"])
 
     if token_path.exists():
         creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
@@ -346,8 +376,8 @@ def get_drive_client(drive_cfg, authorize_only=False):
     account (usually your separate 5TB storage account, not a YouTube
     channel). Only called if config.yaml has a `google_drive:` section."""
     creds = None
-    token_path = BASE_DIR / drive_cfg["token_file"]
-    secret_path = BASE_DIR / drive_cfg["client_secret_file"]
+    token_path = _resolve(drive_cfg["token_file"])
+    secret_path = _resolve(drive_cfg["client_secret_file"])
 
     if token_path.exists():
         creds = Credentials.from_authorized_user_file(str(token_path), DRIVE_SCOPES)

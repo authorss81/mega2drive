@@ -297,6 +297,50 @@ Both scripts take the same flags:
 
 ---
 
+## Keeping credentials out of the project folder
+
+`.gitignore` stops credentials reaching GitHub. It does **not** stop a tool
+running inside this folder from reading them — an AI assistant, a backup
+utility, or a stray script can open any file here, gitignored or not. If you
+want the credentials to be genuinely out of scope rather than merely
+uncommitted, put them somewhere else entirely.
+
+```powershell
+# anywhere outside the repo, e.g. C:\Users\USER\.secrets\mega2drive\
+$env:MEGA2DRIVE_CONFIG      = "C:\Users\USER\.secrets\mega2drive\config.yaml"
+$env:MEGA2DRIVE_CREDENTIALS = "C:\Users\USER\.secrets\mega2drive\credentials"
+```
+
+Both scripts honour these. With them set, nothing holding a credential needs to
+exist inside the project directory — the paths declared in the config
+(`client_secret_file`, `token_file`) are resolved against
+`MEGA2DRIVE_CREDENTIALS` instead of the repo.
+
+To make it permanent for your shell:
+
+```powershell
+notepad $PROFILE
+# add the two lines above
+```
+
+Unset in GitHub Actions, where the workflow writes `config.yaml` and
+`credentials/` into the runner's own checkout — that checkout is destroyed when
+the job ends.
+
+### Safely sharing a config for help
+
+Print it with every secret masked. Keys, nesting, paths, and non-secret values
+like `folder_id` stay readable; passwords, tokens, and account addresses do not:
+
+```powershell
+python guard_secrets.py --show config.yaml
+```
+
+Paste that output instead of the file. This is the safe way to ask for help
+with a config.
+
+---
+
 ## Credential guard
 
 Real credentials must never enter this repo: a GitHub Secret is encrypted and
