@@ -584,17 +584,19 @@ def run(config, single_file_test=False, retry_failed_only=False, list_only=False
     assignments, usage_after, caps = pack_files_to_accounts(files, config, rows)
 
     if list_only:
+        # Aliases, never real addresses: this output is the kind of thing that
+        # ends up pasted into a chat or an issue, and it must be safe to share.
         print(f"\n{'ACCOUNT':30} {'SIZE':>10}  FILENAME")
         print("-" * 90)
         for f, acc in assignments:
-            size_mb = f"{f['size_bytes']/1e6:.1f}MB" if f["size_bytes"] else "?"
-            print(f"{acc['email']:30} {size_mb:>10}  {f['name']}")
+            size_mb = f"{f['size_bytes']/1e6:.1f}MB" if f.get("size_bytes") else "?"
+            print(f"{redact(acc.get('alias') or acc['email']):30} {size_mb:>10}  {f['name']}")
         print(f"\nAccount fill plan (after this batch):")
         for acc in config["mega_destination_accounts"]:
-            email = acc["email"]
-            used_gb = usage_after.get(email, 0) / (1024**3)
-            cap_gb = caps[email] / (1024**3)
-            print(f"  {email:30} {used_gb:6.2f} / {cap_gb:.0f} GB")
+            label = redact(acc.get("alias") or acc["email"])
+            used_gb = usage_after.get(acc["email"], 0) / (1024**3)
+            cap_gb = caps[acc["email"]] / (1024**3)
+            print(f"  {label:30} {used_gb:6.2f} / {cap_gb:.0f} GB")
         assigned_ids = {f["id"] for f, _ in assignments}
         skipped = [f for f in files if f["id"] not in assigned_ids]
         if skipped:
