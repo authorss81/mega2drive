@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pre-commit guard: refuse any commit that would put credentials into this
+# PUBLIC repository. Installed by scripts/install_hooks.ps1 (or the manual
+# commands in the README).
+#
+# `git config core.hooksPath .githooks` makes git use this directory for every
+# hook in this clone, which is why the hook itself is version-controlled
+# rather than living in the untracked .git/hooks/.
+exec python "$(git rev-parse --show-toplevel)/guard_secrets.py" --staged || {
+  echo ""
+  echo "Commit aborted. See the message above for how to store credentials safely."
+  exit 1
+}

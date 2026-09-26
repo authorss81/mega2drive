@@ -287,12 +287,42 @@ Both scripts take the same flags:
 
 | Guide | Covers |
 |---|---|
+| **`10_full_setup_walkthrough.md`** | **Start here — complete field-by-field setup for MEGA → YouTube + Drive** |
 | `MASTER_GUIDE.md` | Complete reference, setup order, security, robustness |
 | `01_google_cloud_youtube_oauth_setup.md` | Google Cloud project, API enablement, OAuth clients, tokens |
 | `06_rclone_fast_upload_guide.md` | Fastest PC → Drive uploads, tuned for this machine |
 | `07_checking_upload_progress.md` | What's uploaded vs. remaining |
 | `08_git_terminal_upload_guide.md` | Creating and pushing the repo (done — reference only) |
 | `09_starting_pipeline_A.md` | First manual run, and what to watch for |
+
+---
+
+## Credential guard
+
+Real credentials must never enter this repo: a GitHub Secret is encrypted and
+un-leakable, but a committed secret is served from a CDN cache within minutes
+and stays in git history permanently. Two layers enforce that:
+
+**Local pre-commit hook** — install once per clone:
+
+```powershell
+.\scripts\install_hooks.ps1
+```
+
+**CI check** — `secret-guard.yml` runs on every push and pull request and fails
+the build. This is the authoritative one, since a local hook can be bypassed
+with `--no-verify` or skipped entirely by pushing from another machine.
+
+`guard_secrets.py` blocks filled-in configs, `credentials/`, key files, real
+email addresses, non-placeholder `password:` values, and credential-shaped
+tokens (GitHub, Google OAuth, Google API keys). It is tuned to allow the
+`*.yaml.template` files, which exist precisely to hold example structure, and
+to allow `example.com`, `actions@users.noreply.github.com`, and similar.
+
+**If it ever fires on something real:** treat that value as compromised and
+rotate it. Deleting the file or rewriting history is not sufficient —
+unreachable commits stay fetchable by SHA, and anything already scraped is
+gone.
 
 ## Repo layout
 

@@ -179,6 +179,9 @@ on every single upload). No manual draft step, ever.
 | — | `match_local_files.py` | Cross-check local files vs. either manifest |
 | — | `run_report.py` | Per-run progress report the dispatcher reads |
 | — | `.github/workflows/dispatcher.yml` | Re-triggers a pipeline while its backlog lasts |
+| — | `guard_secrets.py` | Blocks credentials entering this public repo |
+| — | `.githooks/pre-commit` | Local commit guard (`scripts/install_hooks.ps1`) |
+| — | `.github/workflows/secret-guard.yml` | CI credential check |
 | — | `.gitignore` | Safety net against committing secrets |
 | — | `requirements.txt` | Python dependencies |
 
