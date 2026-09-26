@@ -344,6 +344,40 @@ class QuotaExceeded(Exception):
     pass
 
 
+def run_oauth_flow(flow, label):
+    """Complete an installed-app OAuth flow, whatever the library version.
+
+    `InstalledAppFlow.run_console()` was deprecated and then REMOVED in
+    google-auth-oauthlib 1.2+ -- calling it raises AttributeError, which used
+    to break `--authorize-only` outright. The supported path is
+    `run_local_server()`, which opens the browser and captures the redirect on
+    a temporary localhost port.
+
+    Two fallbacks, in order:
+      1. run_local_server(port=0)  - browser opens, redirect captured locally
+      2. print URL, paste the code - for locked-down machines where localhost
+         binding is blocked (some corporate firewalls, WSL2 port forwarding)
+    """
+    if hasattr(flow, "run_local_server"):
+        try:
+            return flow.run_local_server(port=0, open_browser=True,
+                                        success_message="Authorization complete.")
+        except Exception as e:
+            log(f"Local redirect server could not start ({e}). Falling back to a copy/paste code.")
+    else:
+        log("This version of google-auth-oauthlib has no run_local_server(); "
+            "using a copy/paste code instead.")
+
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+    print("\n" + "=" * 70)
+    print("Open this URL in your browser and sign in:\n")
+    print(auth_url)
+    print("\n" + "=" * 70)
+    code = input("Paste the authorization code here: ").strip()
+    flow.fetch_token(code=code)
+    return flow.credentials
+
+
 def get_youtube_client(channel_cfg, authorize_only=False):
     creds = None
     token_path = _resolve(channel_cfg["token_file"])
@@ -360,8 +394,8 @@ def get_youtube_client(channel_cfg, authorize_only=False):
                 log(f"ERROR: missing client secret file {secret_path} for channel {channel_cfg['name']}")
                 return None
             flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), SCOPES)
-            log(f"--- Authorize channel '{channel_cfg['name']}': follow the printed URL/instructions ---")
-            creds = flow.run_console()
+            log(f"--- Authorize channel '{channel_cfg['name']}' (browser will open) ---")
+            creds = run_oauth_flow(flow, f"channel {channel_cfg['name']}")
         token_path.parent.mkdir(parents=True, exist_ok=True)
         with open(token_path, "w") as f:
             f.write(creds.to_json())
@@ -390,8 +424,8 @@ def get_drive_client(drive_cfg, authorize_only=False):
                 log(f"ERROR: missing client secret file {secret_path} for Google Drive")
                 return None
             flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), DRIVE_SCOPES)
-            log("--- Authorize Google Drive: follow the printed URL/instructions ---")
-            creds = flow.run_console()
+            log("--- Authorize Google Drive (browser will open) ---")
+            creds = run_oauth_flow(flow, "Google Drive")
         token_path.parent.mkdir(parents=True, exist_ok=True)
         with open(token_path, "w") as f:
             f.write(creds.to_json())

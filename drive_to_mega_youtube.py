@@ -259,6 +259,40 @@ class QuotaExceeded(Exception):
 # Google OAuth (shared pattern for Drive source + each YouTube channel)
 # ---------------------------------------------------------------------------
 
+def run_oauth_flow(flow, label):
+    """Complete an installed-app OAuth flow, whatever the library version.
+
+    `InstalledAppFlow.run_console()` was deprecated and then REMOVED in
+    google-auth-oauthlib 1.2+ -- calling it raises AttributeError, which used
+    to break `--authorize-only` outright. The supported path is
+    `run_local_server()`, which opens the browser and captures the redirect on
+    a temporary localhost port.
+
+    Two fallbacks, in order:
+      1. run_local_server(port=0)  - browser opens, redirect captured locally
+      2. print URL, paste the code - for locked-down machines where localhost
+         binding is blocked (some corporate firewalls, WSL2 port forwarding)
+    """
+    if hasattr(flow, "run_local_server"):
+        try:
+            return flow.run_local_server(port=0, open_browser=True,
+                                        success_message="Authorization complete.")
+        except Exception as e:
+            log(f"Local redirect server could not start ({e}). Falling back to a copy/paste code.")
+    else:
+        log("This version of google-auth-oauthlib has no run_local_server(); "
+            "using a copy/paste code instead.")
+
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+    print("\n" + "=" * 70)
+    print(f"Open this URL in your browser to authorize {label}:\n")
+    print(auth_url)
+    print("\n" + "=" * 70)
+    code = input("Paste the authorization code here: ").strip()
+    flow.fetch_token(code=code)
+    return flow.credentials
+
+
 def get_google_client(cfg, scopes, service, version, authorize_only=False):
     creds = None
     token_path = _resolve(cfg["token_file"])
@@ -275,8 +309,8 @@ def get_google_client(cfg, scopes, service, version, authorize_only=False):
                 log(f"ERROR: missing client secret file {secret_path}")
                 return None
             flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), scopes)
-            log(f"--- Authorize '{cfg.get('name', service)}': follow the printed URL/instructions ---")
-            creds = flow.run_console()
+            log(f"--- Authorize '{cfg.get('name', service)}' (browser will open) ---")
+            creds = run_oauth_flow(flow, cfg.get("name", service))
         token_path.parent.mkdir(parents=True, exist_ok=True)
         with open(token_path, "w") as f:
             f.write(creds.to_json())
