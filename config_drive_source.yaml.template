@@ -34,26 +34,38 @@ parallel_workers: 5
 # (e.g. it already has other files on it from before, outside this
 # pipeline's tracking), tell it how many GB are already used so it doesn't
 # overfill past the real 20GB cap. Leave at 0 for a freshly created account.
+
+# OPTIONAL: one password for every account that doesn't set its own.
+# mega_destination_accounts_default_password: "your-shared-password"
+
 mega_destination_accounts:
-  - email: "storage1@example.com"
-    password: "REPLACE_ME"
-    alias: "storage_1"   # shown in logs/manifest instead of the real email —
-                          # important on a PUBLIC repo. Leave blank to
-                          # auto-generate nothing useful here — set it explicitly.
-    enabled: true         # set false to permanently exclude a dead/deleted account
-                           # from the capacity packer, instead of files getting
-                           # routed to it every run and failing
-    cap_gb: 20
-    starting_used_gb: 0
-    remote_dir: "/"
-  - email: "storage2@example.com"
-    password: "REPLACE_ME"
-    alias: "storage_2"
+  # --- COMPACT FORM: generate many accounts from a pattern ---
+  # {n} is replaced with the account number. Use `numbers` for a specific
+  # list, or `count` (+ optional `start_at`) for a contiguous run.
+  - email_pattern: "yourbase+{n}@gmail.com"
+    numbers: [1, 2, 3, 4, 5, 45]        # or: count: 30   /   count: 30, start_at: 1
+    password: "REPLACE_ME"               # applies to every account this block generates
+    alias_prefix: "storage_"             # -> storage_1, storage_2, ... (visible in logs, not the email)
     enabled: true
-    cap_gb: 20
+    cap_gb: 20                           # copied onto every generated account
     starting_used_gb: 0
     remote_dir: "/"
-  # ... add all 30 here, same format
+
+  # --- EXPLICIT FORM: one entry per account, if you prefer listing them ---
+  #  - email: "storage1@example.com"
+  #    password: "REPLACE_ME"
+  #    alias: "storage_1"     # shown in logs/manifest instead of the real email —
+  #                           # important on a PUBLIC repo. Set it explicitly.
+  #    enabled: true         # set false to permanently exclude a dead/deleted account
+  #                           # from the capacity packer, instead of files getting
+  #                           # routed to it every run and failing
+  #    cap_gb: 20
+  #    starting_used_gb: 0
+  #    remote_dir: "/"
+  #
+  # Both forms can be mixed in the same list. Any extra key in a pattern
+  # block (cap_gb, remote_dir, enabled, starting_used_gb) is copied onto each
+  # account it generates, so you type it once.
 
 # --- YOUTUBE CHANNELS (backup copies) ---
 # Can reuse the same 5 channels/credentials already set up for the other

@@ -10,20 +10,38 @@ allowed_extensions:
 # List every Mega account you want pulled from.
 # 2FA note: if enabled, mega-cmd will prompt for a code interactively
 # the first time you log into each account — run --authorize-only first.
+
+# OPTIONAL: one password for every account that doesn't set its own.
+# Handy when they all share one. Leave it out and set `password` per account.
+# mega_accounts_default_password: "your-shared-password"
+
 mega_accounts:
-  - email: "account1@example.com"
-    password: "REPLACE_ME"
-    alias: "mega_account_1"   # shown in logs/manifest.csv instead of the real email —
-                               # important on a PUBLIC repo, since Actions logs and
-                               # committed manifest files are visible to anyone.
-                               # Leave blank to auto-generate "mega_account_N".
-    enabled: true              # set false to permanently skip an account you know is
-                                # deleted/gone, instead of it failing login every run
-  - email: "account2@example.com"
-    password: "REPLACE_ME"
-    alias: "mega_account_2"
+  # --- COMPACT FORM: generate many accounts from a pattern ---
+  # {n} is replaced with the account number. Use `numbers` for a specific
+  # list, or `count` (+ optional `start_at`) for a contiguous run.
+  - email_pattern: "yourbase+{n}@gmail.com"
+    numbers: [1, 2, 3, 4, 5, 45]        # or: count: 30   /   count: 30, start_at: 1
+    password: "REPLACE_ME"               # applies to every account this block generates
+    alias_prefix: "mega_account_"        # -> mega_account_1, mega_account_2, ...
     enabled: true
-  # ... add all 12 here, same format
+
+  # --- EXPLICIT FORM: one entry per account, if you prefer listing them ---
+  #  - email: "account1@example.com"
+  #    password: "REPLACE_ME"
+  #    alias: "mega_account_1"   # shown in logs/manifest.csv instead of the real email —
+  #                               # important on a PUBLIC repo, since Actions logs and
+  #                               # committed manifest files are visible to anyone.
+  #                               # Leave blank to auto-generate "mega_account_N".
+  #    enabled: true            # set false to permanently skip an account you know is
+  #                              # deleted/gone, instead of it failing login every run
+  #  - email: "account2@example.com"
+  #    password: "REPLACE_ME"
+  #    alias: "mega_account_2"
+  #    enabled: true
+  #
+  # Both forms can be mixed in the same list. Any extra key in a pattern
+  # block (cap_gb, remote_dir, enabled, ...) is copied onto each account it
+  # generates, so you type it once.
 
 # --- YOUTUBE CHANNELS ---
 # One entry per channel. client_secret_file = the OAuth JSON from Google Cloud

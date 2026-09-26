@@ -110,7 +110,89 @@ def load_config():
         log(f"ERROR: {CONFIG_PATH} not found. Copy config_drive_source.yaml.template and fill it in.")
         sys.exit(1)
     with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
+        config = yaml.safe_load(f)
+    config["mega_destination_accounts"] = expand_accounts(
+        config.get("mega_destination_accounts"),
+        default_password=config.get("mega_destination_accounts_default_password"),
+        default_alias_prefix="storage_",
+    )
+    return config
+
+
+def expand_accounts(entries, default_password=None, default_alias_prefix="storage_"):
+    """Flatten mega_destination_accounts into a plain list of concrete accounts.
+
+    Two forms, mixable in the same list:
+
+    1. Explicit - one mapping per account, each with its own email/password:
+
+        mega_destination_accounts:
+          - email: "one@example.com"
+            password: "..."
+            cap_gb: 20
+
+    2. Pattern - one mapping that describes N generated accounts:
+
+        mega_destination_accounts:
+          - email_pattern: "abc+{n}@gmail.com"
+            count: 30                # or: numbers: [1, 2, 3, 4, 5, 45]
+            start_at: 1              # only with count
+            password: "shared"       # applies to every generated account
+            alias_prefix: "storage_" # -> storage_1, storage_2, ...
+            cap_gb: 20               # any other key is copied to each account
+            enabled: true
+            remote_dir: "/"
+
+    Every other key in a pattern block is copied verbatim onto each generated
+    account, so per-account fields (cap_gb, remote_dir, enabled, starting_used_gb)
+    only get typed once. {n} in email_pattern/alias_pattern is the number.
+
+    Password resolution, most specific first: the account's own `password`,
+    then the pattern block's `password`, then `default_password`. An account
+    that ends up with no password is reported loudly rather than silently
+    failing to log in.
+    """
+    out = []
+    for entry in entries or []:
+        if "email_pattern" not in entry:
+            acct = dict(entry)
+            if not acct.get("password") and default_password:
+                acct["password"] = default_password
+            out.append(acct)
+            continue
+
+        pattern = entry["email_pattern"]
+        alias_pattern = entry.get("alias_pattern")
+        alias_prefix = entry.get("alias_prefix")
+
+        if entry.get("numbers") is not None:
+            numbers = list(entry["numbers"])
+        elif entry.get("count"):
+            start = int(entry.get("start_at", 1))
+            numbers = list(range(start, start + int(entry["count"])))
+        else:
+            log(f"WARNING: account block has email_pattern but no count or numbers - skipped.")
+            continue
+
+        for n in numbers:
+            acct = {k: v for k, v in entry.items()
+                    if k not in ("email_pattern", "count", "start_at", "numbers",
+                                 "alias_pattern", "alias_prefix")}
+            acct["email"] = pattern.replace("{n}", str(n))
+            if alias_pattern:
+                acct["alias"] = alias_pattern.replace("{n}", str(n))
+            elif alias_prefix:
+                acct["alias"] = f"{alias_prefix}{n}"
+            else:
+                acct["alias"] = f"{default_alias_prefix}{n}"
+            acct.setdefault("password", default_password or "")
+            out.append(acct)
+
+    missing = [a.get("alias", a.get("email", "?")) for a in out if not a.get("password")]
+    if missing:
+        log(f"WARNING: {len(missing)} account(s) have no password and will fail to log in: "
+            f"{', '.join(missing[:10])}{' ...' if len(missing) > 10 else ''}")
+    return out
 
 
 def manifest_path(config):

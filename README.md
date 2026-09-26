@@ -48,6 +48,33 @@ Secrets are encrypted and hidden **regardless of repo visibility** — a public
 repo does not expose them. This repo is public on purpose so the guides and
 scripts are readable; credentials live only in Secrets.
 
+### What CLIENT_SECRET vs TOKEN actually is
+
+These are two different halves of one OAuth handshake, and you need both:
+
+| | What it is | Where it comes from | Changes |
+|---|---|---|---|
+| `CLIENT_SECRET_…` | Your app's identity: "this upload is from my Google Cloud project". A JSON file you download once. | Google Cloud console → Credentials → Create OAuth client ID → **Download JSON** | Once per channel, never changes |
+| `TOKEN_…` | Your permission grant: "I, the owner of this channel, allow that app to upload". Created after you approve access in the browser. | Produced locally by `--authorize-only` | Once per channel; refreshes itself |
+
+Neither works without the other. The client secret identifies the *app*; the
+token proves *you* authorized it for that specific channel. That is why there
+is one pair per YouTube channel — a token is bound to the account that
+approved it, so channel 2 needs its own approval and therefore its own pair.
+
+Concretely, for one channel:
+
+1. Google Cloud → your project → **Download JSON** → this file is
+   `client_secret_channel1.json` → paste its whole contents into the
+   `CLIENT_SECRET_CHANNEL1` secret.
+2. Put that file in your local `credentials/` folder alongside `config.yaml`.
+3. Run `python mega_to_youtube.py --authorize-only` → approve in the browser →
+   it writes `token_channel1.json` → paste its contents into `TOKEN_CHANNEL1`.
+
+Do that per channel, and the same for Drive (`client_secret_drive_source.json`
+→ `CLIENT_SECRET_DRIVE_SOURCE`, `token_drive_source.json` →
+`TOKEN_DRIVE_SOURCE`).
+
 ### Pipeline A — `mega2yt` (`.github/workflows/mega-to-youtube-workflow.yml`)
 
 | Secret | Contents |
@@ -117,26 +144,39 @@ optional `force_pipeline`.
 
 Yes — accounts are added by editing config, not code. Nothing to redeploy.
 
-**More MEGA destination accounts (Pipeline B):** append entries to
-`mega_destination_accounts` in `config_drive_source.yaml`:
+**More MEGA destination accounts (Pipeline B):** if your addresses follow a
+pattern, use the compact form — one block instead of 30 near-identical
+entries:
 
 ```yaml
-  - email: "storage31@example.com"
-    password: "..."
-    alias: "storage_31"
-    enabled: true
-    cap_gb: 20
+mega_destination_accounts:
+  - email_pattern: "yourbase+{n}@gmail.com"
+    count: 30                  # or: numbers: [1, 2, 3, 4, 5, 45]
+    start_at: 1                # only with count
+    password: "your-password"  # one entry, applied to all 30
+    alias_prefix: "storage_"   # -> storage_1 ... storage_30
+    cap_gb: 20                 # copied onto every generated account
     starting_used_gb: 0
     remote_dir: "/"
+    enabled: true
 ```
 
-Then update the `CONFIG_DRIVE_SOURCE_YAML` secret with the new file
-contents. The capacity packer picks them up on the next run and keeps
-filling accounts in order, so it never needs to know which account a given
-file belongs to.
+Then update the `CONFIG_DRIVE_SOURCE_YAML` secret with the new file contents.
+The capacity packer picks them up on the next run and keeps filling accounts
+in order, so it never needs to know which account a given file belongs to.
 
-**More MEGA source accounts (Pipeline A):** same thing, append to
-`mega_accounts` in `config.yaml` and update the `CONFIG_YAML` secret.
+**More MEGA source accounts (Pipeline A):** identical block under
+`mega_accounts` in `config.yaml`, then update the `CONFIG_YAML` secret.
+
+Both forms are supported and can be mixed in one list — keep the explicit
+`- email: ...` entries for oddballs that don't fit the pattern.
+
+**One shared password:** put it once in the pattern block's `password` (or in
+`mega_accounts_default_password` / `mega_destination_accounts_default_password`
+to cover explicit entries too). Resolution is most-specific-wins: the
+account's own `password`, then the pattern block's, then the default. An
+account that ends up with none is named in a warning at startup rather than
+failing silently mid-run.
 
 **More YouTube channels:** append to `youtube_channels` in both configs
 (cap is 5 per config as written — raise it by adding a `CLIENT_SECRET_CHANNEL6`
@@ -146,8 +186,9 @@ must list your Google account as a test user on the consent screen.
 
 **Important details when adding accounts:**
 
-- Set `alias` on every MEGA account. Logs and the committed manifest are
-  visible on a public repo, so they show `storage_31`, never the real email.
+- Set `alias` on every MEGA account, or use `alias_prefix` in a pattern block.
+  Logs and the committed manifest are visible on a public repo, so they show
+  `storage_31`, never the real email. A pattern block sets this for free.
 - `cap_gb` should match the account's real free-tier cap. The packer treats
   it as hard and stops filling at that point.
 - `starting_used_gb`: if the account already holds files from outside this
@@ -155,6 +196,10 @@ must list your Google account as a test user on the consent screen.
 - `enabled: false` permanently excludes a dead or deleted account. Do this
   rather than leaving it enabled — Pipeline B's packer can't tell "full" from
   "unreachable", so a dead-but-enabled account silently strands files.
+- **Test one generated account before generating thirty.** `--list-only`
+  expands the config and logs into each account without transferring
+  anything, which confirms MEGA accepts the address format and the password
+  before you depend on a 30-account run.
 
 ---
 
