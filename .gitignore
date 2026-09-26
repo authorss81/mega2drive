@@ -7,3 +7,7 @@ config_drive_source.yaml
 credentials/
 *.json
 downloads/
+
+# Python bytecode from local testing / compile checks
+__pycache__/
+*.pyc

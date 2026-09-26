@@ -8,6 +8,13 @@ on:
 permissions:
   contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo
 
+# One run at a time. The dispatcher can queue a follow-up run the moment this
+# one finishes; without this, a queued run and a still-finishing run would both
+# be writing the same manifest and racing each other.
+concurrency:
+  group: mega2yt
+  cancel-in-progress: false
+
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
@@ -67,8 +74,19 @@ jobs:
           # GitHub — this just writes empty files for them, which the script
           # simply won't find valid clients for and will skip.)
 
+      - name: Snapshot manifest (before the run)
+        run: python run_report.py snapshot --manifest manifest.csv
+
       - name: Run the pipeline
         run: python mega_to_youtube.py --run-all
+
+      - name: Record what this run accomplished
+        if: always()
+        run: |
+          python run_report.py report --manifest manifest.csv \
+            --pipeline mega2yt \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-attempt "$GITHUB_RUN_ATTEMPT"
 
       - name: Verify nothing was lost (informational — won't fail the run)
         continue-on-error: true

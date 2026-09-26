@@ -1,0 +1,199 @@
+name: dispatcher
+# ---------------------------------------------------------------------------
+# Auto-dispatch: decide whether a finished pipeline should run again.
+#
+# WHY IT RE-TRIGGERS THE *SAME* PIPELINE (not the other one):
+#   A video that lives in MEGA must be handled by mega2yt; a video that lives
+#   in the Drive landing folder must be handled by drive2mega-yt. Chaining one
+#   into the other would put the same file on YouTube twice, which is exactly
+#   what MASTER_GUIDE.md's one-pipeline-per-video rule forbids. So the only
+#   job here is to keep a pipeline going until ITS OWN backlog is clear.
+#
+# LOOP SAFETY (the important part):
+#   A dispatcher that always re-fires spins forever, so it re-fires ONLY when
+#   the run that just finished made real progress (its completed-file count
+#   went up). If a run completed nothing while work remains, the cause is
+#   external and human-fixable - YouTube daily quota exhausted, dead or
+#   2FA-locked MEGA account, no capacity left - and re-firing would burn
+#   Actions minutes forever. So: no progress means stop.
+#   Progress is monotonic (a completed file never un-completes), so this
+#   terminates by construction.
+# ---------------------------------------------------------------------------
+
+on:
+  workflow_run:
+    workflows: ["mega2yt", "drive2mega-yt"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      force_pipeline:
+        description: "Pipeline to evaluate ('mega2yt' or 'drive2mega-yt')"
+        required: false
+        default: ""
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: dispatcher
+  cancel-in-progress: false
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repo (for the manifest the finished run just committed)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Decide whether to re-dispatch
+        id: decide
+        env:
+          FINISHED_WORKFLOW: ${{ github.event.workflow_run.name }}
+          FINISHED_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          FINISHED_RUN_ID: ${{ github.event.workflow_run.id }}
+          FORCE_PIPELINE: ${{ inputs.force_pipeline }}
+        run: |
+          set -euo pipefail
+          python3 <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, sys
+
+          WORKFLOWS = {
+              "mega2yt": ".github/workflows/mega-to-youtube-workflow.yml",
+              "drive2mega-yt": ".github/workflows/drive-to-mega-youtube-workflow.yml",
+          }
+          REPORT = "logs/last_run.json"
+
+          finished = os.environ.get("FINISHED_WORKFLOW", "").strip()
+          conclusion = os.environ.get("FINISHED_CONCLUSION", "").strip()
+          forced = os.environ.get("FORCE_PIPELINE", "").strip()
+          finished_id = os.environ.get("FINISHED_RUN_ID", "").strip()
+
+          def out(k, v):
+              print(f"{k}={v}")
+
+          for k, v in (("pipeline", ""), ("file", ""), ("completed", 0),
+                       ("pending", 0), ("progress", 0), ("dispatch", "false"),
+                       ("reason", "unknown")):
+              out(k, v)
+
+          pipeline = finished if finished in WORKFLOWS else (forced if forced in WORKFLOWS else "")
+          if not pipeline:
+              print(f"Unknown finished workflow '{finished}' - nothing to do.", file=sys.stderr)
+              out("reason", "unknown workflow")
+              sys.exit(0)
+          out("pipeline", pipeline)
+          out("file", WORKFLOWS[pipeline])
+
+          # Only chain off a run that itself succeeded. A cancelled or timed-out
+          # run left a partial manifest, and its report may not have been
+          # written at all. The daily cron picks that case back up.
+          if conclusion and conclusion != "success":
+              print(f"Run concluded '{conclusion}' - not chaining.", file=sys.stderr)
+              out("reason", f"conclusion={conclusion}")
+              sys.exit(0)
+
+          # The run's own account of what it did. Deliberately NOT derived from
+          # git history: when a run completes nothing the manifest is unchanged,
+          # the commit is skipped, and HEAD~1 is stale -- which would read as
+          # progress and loop forever. The report always names its own run_id,
+          # so it can be checked for freshness instead of inferred.
+          try:
+              with open(REPORT, encoding="utf-8") as f:
+                  report = json.load(f)
+          except FileNotFoundError:
+              print(f"No {REPORT} - the run did not record a report.", file=sys.stderr)
+              out("reason", "no run report")
+              sys.exit(0)
+          except Exception as e:
+              print(f"Could not read {REPORT}: {e}", file=sys.stderr)
+              out("reason", "unreadable run report")
+              sys.exit(0)
+
+          if finished_id and str(report.get("run_id", "")) != finished_id:
+              print(f"Run report is stale (run_id {report.get('run_id')} != {finished_id}).",
+                    file=sys.stderr)
+              out("reason", "stale run report")
+              sys.exit(0)
+
+          if report.get("pipeline") != pipeline:
+              print(f"Run report is for '{report.get('pipeline')}', not '{pipeline}'.",
+                    file=sys.stderr)
+              out("reason", "report pipeline mismatch")
+              sys.exit(0)
+
+          completed = int(report.get("completed_this_run", 0) or 0)
+          pending = int(report.get("pending_total", 0) or 0)
+          out("completed", completed)
+          out("pending", pending)
+          print(f"run {report.get('run_id')} ({pipeline}): completed {completed} this run, "
+                f"{pending} still pending, {report.get('completed_total')} done in total.")
+
+          if pending == 0:
+              print("Backlog clear - nothing left to do.", file=sys.stderr)
+              out("reason", "backlog clear")
+          elif completed == 0:
+              print("Pending work but this run completed nothing - NOT re-dispatching.",
+                    file=sys.stderr)
+              print("Something external is blocking it: YouTube daily quota, a dead or "
+                    "2FA-locked MEGA account, or no capacity left. Read the run log.",
+                    file=sys.stderr)
+              out("reason", "no progress")
+          else:
+              print("Progress made with work pending - re-dispatching to continue.",
+                    file=sys.stderr)
+              out("progress", 1)
+              out("dispatch", "true")
+              out("reason", "progress with backlog")
+          PY
+
+      - name: Re-dispatch the pipeline
+        if: steps.decide.outputs.dispatch == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.DISPATCH_TOKEN || github.token }}
+          FILE: ${{ steps.decide.outputs.file }}
+          PIPELINE: ${{ steps.decide.outputs.pipeline }}
+        run: |
+          set -euo pipefail
+          if [ ! -f "${FILE}" ]; then
+            echo "Workflow file '${FILE}' not found - cannot dispatch." >&2
+            exit 1
+          fi
+          echo "Re-dispatching ${PIPELINE} (${FILE}) to continue its backlog..."
+          gh workflow run "${FILE}" --ref "${GITHUB_REF_NAME}"
+          echo "Dispatched."
+
+      - name: Summary
+        if: always()
+        env:
+          PIPELINE: ${{ steps.decide.outputs.pipeline }}
+          COMPLETED: ${{ steps.decide.outputs.completed }}
+          PENDING: ${{ steps.decide.outputs.pending }}
+          DISPATCH: ${{ steps.decide.outputs.dispatch }}
+          REASON: ${{ steps.decide.outputs.reason }}
+        run: |
+          {
+            echo "### Dispatcher - ${PIPELINE:-n/a}"
+            echo ""
+            echo "| completed this run | still pending | re-dispatched |"
+            echo "|---|---|---|"
+            echo "| ${COMPLETED:-?} | ${PENDING:-?} | ${DISPATCH:-false} |"
+            echo ""
+            echo "Reason: \`${REASON:-unknown}\`"
+            echo ""
+            if [ "${REASON:-}" = "no progress" ]; then
+              echo "**Stopped, and that is intentional.** Work remains but the run"
+              echo "completed nothing new, so re-running it would achieve nothing and"
+              echo "burn Actions minutes forever. The usual causes:"
+              echo ""
+              echo "- every YouTube channel hit its daily upload quota"
+              echo "- a MEGA account is dead, misconfigured, or locked behind 2FA"
+              echo "- no enabled MEGA account has capacity left"
+              echo ""
+              echo "Fix the cause, then re-run the pipeline by hand. The daily cron"
+              echo "will also pick it up on its own."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

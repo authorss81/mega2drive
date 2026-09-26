@@ -74,6 +74,45 @@ files, and the script skips channels it can't build a client for.
 
 ---
 
+## Auto-dispatch — continuing until the backlog is clear
+
+`dispatcher.yml` watches both pipelines and re-triggers a pipeline when it
+finishes with work still outstanding, so a 500-file backlog drains across
+several runs instead of only whatever fits in one 6-hour window.
+
+It re-triggers the **same** pipeline, never the other one. Videos in MEGA are
+Pipeline A's job; videos in the Drive landing folder are Pipeline B's. Chaining
+one into the other would put the same file on YouTube twice.
+
+**It will not loop forever.** A re-dispatch happens *only* when the run that
+just finished actually completed new files. If a run completes nothing while
+work remains, the cause is external — every YouTube channel hit its daily
+quota, a MEGA account is dead or 2FA-locked, no capacity left — and re-running
+would achieve nothing while burning Actions minutes indefinitely. So the chain
+stops and the daily cron picks it up tomorrow.
+
+Progress is not guessed from git history. Each run writes
+`logs/last_run.json` stating its own `run_id` and how many files it finished;
+the dispatcher trusts it only if the `run_id` matches the run that just
+finished. A missing, stale, or corrupt report is treated as "no progress".
+That matters because a run that completes nothing leaves the manifest
+unchanged, skips the commit, and would leave the previous commit looking like
+a comparison point — reading as progress when there was none.
+
+Each pipeline also has a `concurrency` group, so a dispatched run queues
+behind the one still finishing instead of racing it on the same manifest.
+
+**One-time setup for continuous chaining:** add a `DISPATCH_TOKEN` repo secret
+holding a fine-grained PAT with `Actions: read and write`. Without it the
+dispatcher falls back to the built-in `GITHUB_TOKEN`, and runs started with
+that token do not raise further `workflow_run` events — so it evaluates once
+per day via cron and then stops. Safe, just less automatic.
+
+You can also run it by hand: **Actions → dispatcher → Run workflow**, with an
+optional `force_pipeline`.
+
+---
+
 ## Adding more accounts later
 
 Yes — accounts are added by editing config, not code. Nothing to redeploy.
@@ -124,9 +163,18 @@ must list your Google account as a test user on the consent screen.
 | Thing | Public? |
 |---|---|
 | GitHub Secrets (MEGA passwords, OAuth tokens/secrets) | **No** — encrypted, never rendered in logs or the UI |
-| Actions run logs | **Yes** — scripts print aliases, never raw emails or passwords |
-| `manifest.csv`, `manifest_drive_source.csv`, `inventory.csv`, `logs/` | **Yes** — committed back by the workflows, aliases only |
+| Actions run logs | **Yes** — every log line passes through `redact()` first |
+| `manifest.csv`, `manifest_drive_source.csv`, `inventory.csv`, `logs/` | **Yes** — committed back by the workflows; every cell is redacted on write |
 | Video filenames | **Yes** — accepted trade-off |
+
+Third-party tools echo the credentials you hand them back in their errors —
+`mega-login` includes the account identifier in its failure message, and Google
+API tracebacks can carry tokens. Since logs and manifests are world-readable
+here, both scripts run every log line and every manifest cell through
+`redact()` (`mega_to_youtube.py`, `drive_to_mega_youtube.py`), which strips
+anything email-shaped plus any `password=` / `refresh_token=` /
+`client_secret=` assignment. Aliases, filenames, paths, and error text survive
+intact, so debugging is unaffected.
 
 `.gitignore` blocks `config.yaml`, `config_drive_source.yaml`,
 `credentials/`, `*.json`, and `downloads/` as a second line of defence
@@ -207,10 +255,12 @@ Both scripts take the same flags:
 .github/workflows/
   mega-to-youtube-workflow.yml          Pipeline A schedule
   drive-to-mega-youtube-workflow.yml     Pipeline B schedule
+  dispatcher.yml                         Re-triggers a pipeline while its backlog lasts
 config.yaml.template                    Pipeline A config template
 config_drive_source.yaml.template       Pipeline B config template
 mega_to_youtube.py                      Pipeline A script (MEGA → YouTube/Drive)
 drive_to_mega_youtube.py                Pipeline B script (Drive → MEGA + YouTube)
+run_report.py                           Per-run progress report the dispatcher reads
 verify_mega_pipeline.py                 Pipeline A completeness check
 verify_drive_pipeline.py                Pipeline B completeness check
 match_local_files.py                    Cross-check local files vs. manifests

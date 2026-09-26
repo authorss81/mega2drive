@@ -79,9 +79,30 @@ MANIFEST_FIELDS = [
     "drive_status", "drive_file_id", "drive_error",
 ]
 
+# --- Redaction ---------------------------------------------------------
+# This repo is PUBLIC, and Actions run logs plus every committed manifest
+# file are world-readable. Third-party tools (mega-cmd, Google API client)
+# echo the credentials they're given back to us in their error output, so
+# anything we print can leak a real email address or password by accident.
+# Everything that reaches a log line or a CSV cell goes through redact()
+# first, so a leak has to be a deliberate change to this function to happen.
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+_PASSWORD_RE = re.compile(r"(?i)\b(password|passwd|pwd)\b\s*[=:]\s*\S+")
+_TOKEN_RE = re.compile(r"(?i)\b(refresh_token|access_token|id_token|client_secret|api_key)\b\s*[=:]\s*\S+")
+
+
+def redact(value):
+    """Strip anything email-shaped, plus credential-looking assignments."""
+    if value is None:
+        return ""
+    text = str(value)
+    text = _PASSWORD_RE.sub(lambda m: f"{m.group(1)}=[redacted]", text)
+    text = _TOKEN_RE.sub(lambda m: f"{m.group(1)}=[redacted]", text)
+    return _EMAIL_RE.sub("[redacted-email]", text)
+
 
 def log(msg):
-    line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}"
+    line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {redact(msg)}"
     print(line)
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_PATH, "a") as f:
@@ -123,7 +144,7 @@ def save_manifest_rows(config, rows):
         writer = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
         writer.writeheader()
         for row in rows.values():
-            writer.writerow(row)
+            writer.writerow({k: redact(v) for k, v in row.items() if k in MANIFEST_FIELDS})
 
 
 def upsert_manifest_row(rows, **fields):
@@ -149,7 +170,7 @@ def mega_login(email, password, alias=None):
         return False
     if result.returncode != 0:
         log(f"MEGA login FAILED for {alias or '[account]'} — account may not exist, be suspended, "
-            f"or have wrong credentials: {result.stderr.strip()}")
+            f"or have wrong credentials: {redact(result.stderr.strip())}")
         return False
     return True
 
@@ -166,7 +187,7 @@ def mega_list_videos_with_details(remote_path="/", allowed_extensions=None):
     exts = allowed_extensions or VIDEO_EXTENSIONS
     result = subprocess.run(["mega-find", remote_path, "--pattern=*"], capture_output=True, text=True)
     if result.returncode != 0:
-        log(f"mega-find failed: {result.stderr.strip()}")
+        log(f"mega-find failed: {redact(result.stderr.strip())}")
         return []
 
     paths = [line.strip() for line in result.stdout.splitlines()
@@ -198,7 +219,7 @@ def mega_download(remote_path, local_dir):
     local_dir.mkdir(parents=True, exist_ok=True)
     result = subprocess.run(["mega-get", remote_path, str(local_dir)], capture_output=True, text=True)
     if result.returncode != 0:
-        raise RuntimeError(f"mega-get failed: {result.stderr.strip()}")
+        raise RuntimeError(f"mega-get failed: {redact(result.stderr.strip())}")
     local_file = local_dir / Path(remote_path).name
     if not local_file.exists():
         raise RuntimeError(f"mega-get reported success but file not found at {local_file}")

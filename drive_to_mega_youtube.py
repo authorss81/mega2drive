@@ -74,9 +74,30 @@ MANIFEST_FIELDS = [
 log_lock = threading.Lock()
 manifest_lock = threading.Lock()
 
+# --- Redaction ---------------------------------------------------------
+# This repo is PUBLIC, and Actions run logs plus every committed manifest
+# file are world-readable. Third-party tools (mega-cmd, Google API client)
+# echo the credentials they're given back to us in their error output, so
+# anything we print can leak a real email address or password by accident.
+# Everything that reaches a log line or a CSV cell goes through redact()
+# first, so a leak has to be a deliberate change to this function to happen.
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+_PASSWORD_RE = re.compile(r"(?i)\b(password|passwd|pwd)\b\s*[=:]\s*\S+")
+_TOKEN_RE = re.compile(r"(?i)\b(refresh_token|access_token|id_token|client_secret|api_key)\b\s*[=:]\s*\S+")
+
+
+def redact(value):
+    """Strip anything email-shaped, plus credential-looking assignments."""
+    if value is None:
+        return ""
+    text = str(value)
+    text = _PASSWORD_RE.sub(lambda m: f"{m.group(1)}=[redacted]", text)
+    text = _TOKEN_RE.sub(lambda m: f"{m.group(1)}=[redacted]", text)
+    return _EMAIL_RE.sub("[redacted-email]", text)
+
 
 def log(msg, prefix=""):
-    line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}]{prefix} {msg}"
+    line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}]{redact(prefix)} {redact(msg)}"
     with log_lock:
         print(line)
         LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -113,7 +134,7 @@ def save_manifest_rows(config, rows):
             writer = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
             writer.writeheader()
             for row in rows.values():
-                writer.writerow(row)
+                writer.writerow({k: redact(v) for k, v in row.items() if k in MANIFEST_FIELDS})
 
 
 def upsert_manifest_row(rows, config, **fields):
@@ -249,7 +270,7 @@ def mega_login(email, password, env, alias=None):
         return False
     if result.returncode != 0:
         log(f"MEGA login FAILED for {alias or '[account]'} — account may not exist, be suspended, "
-            f"or have wrong credentials: {result.stderr.strip()}")
+            f"or have wrong credentials: {redact(result.stderr.strip())}")
         return False
     return True
 
@@ -257,7 +278,7 @@ def mega_login(email, password, env, alias=None):
 def mega_upload_once(local_path, remote_dir, env):
     result = subprocess.run(["mega-put", str(local_path), remote_dir], capture_output=True, text=True, env=env)
     if result.returncode != 0:
-        stderr = result.stderr.strip()
+        stderr = redact(result.stderr.strip())
         if any(w in stderr.lower() for w in ("quota", "storage", "over quota")):
             raise QuotaExceeded(stderr)
         raise RuntimeError(f"mega-put failed: {stderr}")
@@ -400,7 +421,15 @@ def upload_youtube_with_retry(youtube, filepath, title, privacy_status, category
 
 def process_account_batch(account_cfg, file_list, config, rows, drive, staging_root):
     email = account_cfg["email"]
-    alias = account_cfg.get("alias") or email  # falls back to email if no alias set (private repo use is fine either way)
+    # Never fall back to the real address as the alias — that alias reaches log
+    # lines, the committed manifest, and the staging path, all of which are
+    # public on this repo. A missing alias is a config mistake; say so loudly
+    # and use a positional placeholder instead of leaking the email.
+    alias = account_cfg.get("alias")
+    if not alias:
+        alias = f"storage_unnamed_{abs(hash(email)) % 100000}"
+        log(f"WARNING: no 'alias' set for this MEGA account — using placeholder "
+            f"'{alias}' in logs/manifest. Set an alias in config to keep logs meaningful.", prefix=f" [{alias}]")
     prefix = f" [{alias}]"
     env = make_isolated_env()
     if not mega_login(email, account_cfg["password"], env, alias):
@@ -446,7 +475,7 @@ def process_account_batch(account_cfg, file_list, config, rows, drive, staging_r
             upsert_manifest_row(rows, config, timestamp=datetime.now().isoformat(),
                                  drive_file_id=file_id, filename=filename,
                                  file_size_bytes=size_bytes or "",
-                                 mega_account=email, mega_status="failed", mega_error=str(e))
+                                 mega_account=alias, mega_status="failed", mega_error=str(e))
         finally:
             if config["behavior"].get("delete_local_after_upload", True) and local_path.exists():
                 local_path.unlink()
@@ -546,7 +575,7 @@ def run(config, single_file_test=False, retry_failed_only=False, list_only=False
         channel_name = available[yt_cycle_idx]
         yt_cycle_idx += 1
 
-        staging_dir = staging_root / (acc.get("alias") or acc["email"]).replace("@", "_at_").replace(" ", "_")
+        staging_dir = staging_root / (acc.get("alias") or "storage_unnamed").replace("@", "_at_").replace(" ", "_")
         log(f"Re-downloading {filename} from Drive for YouTube backup ...")
         try:
             local_path, _ = download_with_retry(drive, file_id, filename, staging_dir)

@@ -8,6 +8,13 @@ on:
 permissions:
   contents: write
 
+# One run at a time. The dispatcher can queue a follow-up run the moment this
+# one finishes; without this, a queued run and a still-finishing run would both
+# be writing the same manifest and racing each other.
+concurrency:
+  group: drive2mega-yt
+  cancel-in-progress: false
+
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
@@ -65,8 +72,19 @@ jobs:
           # itself (the CONFIG_DRIVE_SOURCE_YAML secret) rather than as 30
           # separate secrets — simpler to manage at that scale.
 
+      - name: Snapshot manifest (before the run)
+        run: python run_report.py snapshot --manifest manifest_drive_source.csv
+
       - name: Run the pipeline
         run: python drive_to_mega_youtube.py --run-all
+
+      - name: Record what this run accomplished
+        if: always()
+        run: |
+          python run_report.py report --manifest manifest_drive_source.csv \
+            --pipeline drive2mega-yt \
+            --run-id "$GITHUB_RUN_ID" \
+            --run-attempt "$GITHUB_RUN_ATTEMPT"
 
       - name: Verify nothing was lost (informational — won't fail the run)
         continue-on-error: true

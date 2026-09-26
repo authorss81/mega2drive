@@ -50,6 +50,9 @@ Never both, or it'll upload to YouTube twice.
    Start it: `09_starting_pipeline_A.md`.
 6. **Run each manually once** (Actions tab → Run workflow) before trusting
    the schedule.
+7. **Optional:** add a `DISPATCH_TOKEN` secret (fine-grained PAT, `Actions:
+   read and write`) to let the dispatcher chain runs automatically until each
+   backlog is clear.
 
 ---
 
@@ -59,15 +62,58 @@ Never both, or it'll upload to YouTube twice.
   Mega passwords, OAuth client secrets/tokens are never at risk from going
   public.
 - **What IS visible on public repos: Actions run logs, and any committed
-  file (`manifest.csv`, `inventory.csv`).** These now show account
-  **aliases** (`mega_account_1`, `storage_1`, etc.) instead of real email
-  addresses — set via the `alias` field in each config template. Real
-  emails only ever exist in memory, passed straight to the login call,
-  never printed or committed.
+  file (`manifest.csv`, `manifest_drive_source.csv`, `inventory.csv`,
+  `logs/`).** These show account **aliases** (`mega_account_1`, `storage_1`,
+  etc.) instead of real email addresses — set via the `alias` field in each
+  config template. Real emails only ever exist in memory, passed straight to
+  the login call, never printed or committed.
+- **Every log line and every manifest cell is passed through `redact()`**
+  before it is written. This is not belt-and-braces: `mega-login` includes
+  the account identifier in its own failure output, and Google API tracebacks
+  can carry tokens — so third-party error text is exactly where a real
+  credential would otherwise escape. `redact()` strips anything email-shaped
+  plus any `password=` / `refresh_token=` / `client_secret=` assignment, while
+  leaving aliases, filenames, paths, and error text intact so debugging still
+  works.
+- A MEGA account with no `alias` set gets a positional placeholder and a
+  loud warning, never its email address.
 - Video filenames ARE visible in manifests/logs — confirmed acceptable.
 - `.gitignore` blocks `config.yaml`, `config_drive_source.yaml`,
   `credentials/`, and any stray `*.json` from ever being committed
   accidentally, as a backup to the Secrets-only design.
+
+---
+
+## Auto-dispatch — draining a backlog without babysitting
+
+`dispatcher.yml` fires on `workflow_run` when either pipeline completes. If
+that pipeline finished new files and still has work outstanding, it is
+re-triggered to continue, so a large backlog drains across several runs
+instead of only what fits in one 6-hour job window.
+
+It re-triggers the **same** pipeline, never the other one — videos in MEGA
+belong to Pipeline A, videos in the Drive landing folder belong to Pipeline
+B, and chaining them would upload the same file to YouTube twice.
+
+**Loop safety.** A re-dispatch requires actual progress. A run that completes
+nothing while work remains is blocked by something external (YouTube daily
+quota, dead or 2FA-locked MEGA account, no capacity left); re-running it would
+achieve nothing forever, so the chain stops and the daily cron retries
+tomorrow. Progress is never inferred from git history — when a run completes
+nothing the manifest is unchanged and the commit is skipped, which would
+leave a stale `HEAD~1` that reads as progress. Instead each run writes
+`logs/last_run.json` with its own `run_id`, and the dispatcher trusts it only
+when the `run_id` matches the run that just finished. Missing, stale, or
+corrupt means "no progress".
+
+Each pipeline carries a `concurrency` group so a dispatched run queues behind
+the one still finishing rather than racing it on the same manifest.
+
+**For continuous chaining**, add a `DISPATCH_TOKEN` repo secret: a
+fine-grained PAT with `Actions: read and write`. Without it the dispatcher
+falls back to the built-in `GITHUB_TOKEN`, and runs started with that token do
+not emit further `workflow_run` events — so it evaluates once per day via cron
+and then stops. Safe, just not continuous.
 
 ---
 
@@ -131,6 +177,8 @@ on every single upload). No manual draft step, ever.
 | — | `verify_mega_pipeline.py` | Pipeline A completeness check |
 | — | `verify_drive_pipeline.py` | Pipeline B completeness check |
 | — | `match_local_files.py` | Cross-check local files vs. either manifest |
+| — | `run_report.py` | Per-run progress report the dispatcher reads |
+| — | `.github/workflows/dispatcher.yml` | Re-triggers a pipeline while its backlog lasts |
 | — | `.gitignore` | Safety net against committing secrets |
 | — | `requirements.txt` | Python dependencies |
 
