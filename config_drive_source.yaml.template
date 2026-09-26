@@ -1,0 +1,80 @@
+# =====================================================================
+# config_drive_source.yaml — FILL THIS IN LOCALLY / AS GITHUB SECRETS,
+# NEVER IN A CHAT
+# =====================================================================
+# Drive is the landing zone: upload new videos from your PC straight into
+# one Drive folder (fastest single hop). This config drives the automation
+# that fans them out to MEGA (real storage, spread across many
+# capacity-capped accounts) and YouTube (backup), running headless.
+
+# --- DRIVE SOURCE (the landing folder you upload new videos into) ---
+drive_source:
+  name: "drive-landing"
+  client_secret_file: "credentials/client_secret_drive_source.json"
+  token_file: "credentials/token_drive_source.json"
+  folder_id: "REPLACE_ME"   # the Drive folder's ID (from its URL, after /folders/)
+
+# --- ONLY these extensions are ever picked up from the Drive folder ---
+allowed_extensions:
+  - ".mkv"
+
+# --- HOW MANY MEGA ACCOUNTS TO UPLOAD IN PARALLEL AT ONCE ---
+# Each parallel worker = one isolated mega-cmd session = one account
+# uploading independently. Higher = faster (up to your runner's total
+# bandwidth ceiling), but more simultaneous connections. Start at 5 and
+# increase once you've confirmed it's stable.
+parallel_workers: 5
+
+# --- MEGA DESTINATION ACCOUNTS (your real, permanent storage — 30 accounts) ---
+# The script fills each account up to cap_gb before moving to the next
+# (greedy bin-packing), tracked automatically via the manifest — you don't
+# need to manually figure out which video goes where.
+#
+# starting_used_gb: if an account ISN'T empty when you start this pipeline
+# (e.g. it already has other files on it from before, outside this
+# pipeline's tracking), tell it how many GB are already used so it doesn't
+# overfill past the real 20GB cap. Leave at 0 for a freshly created account.
+mega_destination_accounts:
+  - email: "storage1@example.com"
+    password: "REPLACE_ME"
+    alias: "storage_1"   # shown in logs/manifest instead of the real email —
+                          # important on a PUBLIC repo. Leave blank to
+                          # auto-generate nothing useful here — set it explicitly.
+    enabled: true         # set false to permanently exclude a dead/deleted account
+                           # from the capacity packer, instead of files getting
+                           # routed to it every run and failing
+    cap_gb: 20
+    starting_used_gb: 0
+    remote_dir: "/"
+  - email: "storage2@example.com"
+    password: "REPLACE_ME"
+    alias: "storage_2"
+    enabled: true
+    cap_gb: 20
+    starting_used_gb: 0
+    remote_dir: "/"
+  # ... add all 30 here, same format
+
+# --- YOUTUBE CHANNELS (backup copies) ---
+# Can reuse the same 5 channels/credentials already set up for the other
+# pipeline — no need to duplicate the OAuth setup.
+youtube_channels:
+  - name: "channel1"
+    client_secret_file: "credentials/client_secret_channel1.json"
+    token_file: "credentials/token_channel1.json"
+  - name: "channel2"
+    client_secret_file: "credentials/client_secret_channel2.json"
+    token_file: "credentials/token_channel2.json"
+  # ... add up to 5 total
+
+# --- UPLOAD SETTINGS ---
+upload:
+  privacy_status: "private"
+  made_for_kids: false   # REQUIRED by YouTube on every upload (COPPA self-declaration) — set automatically
+  category_id: "22"
+
+# --- BEHAVIOR ---
+behavior:
+  delete_local_after_upload: true
+  manifest_file: "manifest_drive_source.csv"   # separate tracking table from
+                                                 # the other pipeline's manifest.csv

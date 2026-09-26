@@ -1,0 +1,9 @@
+# Defense in depth — these should NEVER be committed, since GitHub Secrets
+# are the only place your real credentials belong. This file just makes
+# sure an accidental `git add .` locally can't leak them.
+
+config.yaml
+config_drive_source.yaml
+credentials/
+*.json
+downloads/

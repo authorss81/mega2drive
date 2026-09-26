@@ -1,0 +1,89 @@
+# =============================================================
+# mega2yt config — FILL THIS IN ON THE SERVER, NEVER IN A CHAT
+# =============================================================
+
+# --- ONLY these extensions are ever picked up from your Mega accounts ---
+allowed_extensions:
+  - ".mkv"
+
+# --- MEGA ACCOUNTS ---
+# List every Mega account you want pulled from.
+# 2FA note: if enabled, mega-cmd will prompt for a code interactively
+# the first time you log into each account — run --authorize-only first.
+mega_accounts:
+  - email: "account1@example.com"
+    password: "REPLACE_ME"
+    alias: "mega_account_1"   # shown in logs/manifest.csv instead of the real email —
+                               # important on a PUBLIC repo, since Actions logs and
+                               # committed manifest files are visible to anyone.
+                               # Leave blank to auto-generate "mega_account_N".
+    enabled: true              # set false to permanently skip an account you know is
+                                # deleted/gone, instead of it failing login every run
+  - email: "account2@example.com"
+    password: "REPLACE_ME"
+    alias: "mega_account_2"
+    enabled: true
+  # ... add all 12 here, same format
+
+# --- YOUTUBE CHANNELS ---
+# One entry per channel. client_secret_file = the OAuth JSON from Google Cloud
+# (Guide 01, step 4). token_file is auto-created after first authorization —
+# just pick a unique filename per channel, don't create it yourself.
+youtube_channels:
+  - name: "channel1"
+    client_secret_file: "credentials/client_secret_channel1.json"
+    token_file: "credentials/token_channel1.json"
+  - name: "channel2"
+    client_secret_file: "credentials/client_secret_channel2.json"
+    token_file: "credentials/token_channel2.json"
+  # ... add up to 5 total
+
+# --- GOOGLE DRIVE (optional second destination) ---
+# If enabled, every video is uploaded to BOTH YouTube AND this Drive account,
+# from the same local download — independent success/failure tracking per
+# destination in manifest.csv (a file can succeed on YouTube but still be
+# pending/retried on Drive, or vice versa).
+google_drive:
+  enabled: false                # set true to turn this on
+  client_secret_file: "credentials/client_secret_drive.json"
+  token_file: "credentials/token_drive.json"
+  folder_id: ""                 # optional: a specific Drive folder's ID to upload into
+                                 # (the long string in the folder's URL after /folders/).
+                                 # Leave blank to upload into Drive's root.
+
+# --- UPLOAD SETTINGS ---
+upload:
+  privacy_status: "private"   # private | unlisted | public — you chose private for review
+  made_for_kids: false        # REQUIRED by YouTube on every upload (COPPA self-declaration).
+                               # false = "not made for kids" — set automatically on every video,
+                               # no manual draft step needed.
+  category_id: "22"           # 22 = "People & Blogs", change if you want a different default category
+  distribute_mode: "round_robin"   # "round_robin" spreads uploads evenly across all channels
+                                     # "mega_account_mapped" ties specific Mega accounts to specific channels (see mapping below)
+
+# Only used if distribute_mode is "mega_account_mapped":
+# mega_to_channel_mapping:
+#   account1@example.com: channel1
+#   account2@example.com: channel1
+#   account3@example.com: channel2
+#   ...
+
+# --- BEHAVIOR ---
+behavior:
+  delete_local_after_upload: true   # frees disk space immediately after each successful upload
+  max_local_staging_gb: 30          # safety cap on how much local disk the script will use at once
+  manifest_file: "manifest.csv"     # THE trackable table: mega account, path, size, date,
+                                     # youtube channel, video id, status — one row per video.
+                                     # Open this directly in Excel/Sheets any time to see progress.
+  sort_by_mega_date: false          # true = upload oldest MEGA files first (best-effort; falls back
+                                     # to alphabetical if your mega-cmd version doesn't report dates
+                                     # in a parseable format — check with `--list-only` first)
+
+# --- RETRY BEHAVIOR (fixed in the script, documented here for reference) ---
+# - Transient failures (network blips, timeouts): retried up to 3 times with
+#   backoff (10s, 20s, 40s), then marked "failed" in the manifest — NOT
+#   retried again automatically. Re-run with --retry-failed when ready.
+# - Quota errors (channel hit its daily cap): NOT retried same-run. No
+#   manifest row is written, so the file is automatically picked up again
+#   on the next scheduled run once quota resets. No infinite loop either
+#   way — every path terminates in "success", "failed", or "try next run".

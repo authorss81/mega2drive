@@ -1,0 +1,83 @@
+name: mega2yt
+
+on:
+  workflow_dispatch: {}          # lets you click "Run workflow" manually in the Actions tab
+  schedule:
+    - cron: "0 1 * * *"          # daily at 01:00 UTC — edit to taste; GitHub cron syntax is standard 5-field cron
+
+permissions:
+  contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350         # stay safely under GitHub's 6-hour (360 min) hard job limit
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install mega-cmd
+        run: |
+          wget -q https://mega.nz/linux/repo/xUbuntu_22.04/amd64/megacmd-xUbuntu_22.04_amd64.deb
+          sudo apt-get update -qq
+          sudo apt-get install -y ./megacmd-xUbuntu_22.04_amd64.deb
+
+      - name: Reconstruct config.yaml and credentials from Secrets
+        env:
+          CONFIG_YAML: ${{ secrets.CONFIG_YAML }}
+          CLIENT_SECRET_CHANNEL1: ${{ secrets.CLIENT_SECRET_CHANNEL1 }}
+          CLIENT_SECRET_CHANNEL2: ${{ secrets.CLIENT_SECRET_CHANNEL2 }}
+          CLIENT_SECRET_CHANNEL3: ${{ secrets.CLIENT_SECRET_CHANNEL3 }}
+          CLIENT_SECRET_CHANNEL4: ${{ secrets.CLIENT_SECRET_CHANNEL4 }}
+          CLIENT_SECRET_CHANNEL5: ${{ secrets.CLIENT_SECRET_CHANNEL5 }}
+          TOKEN_CHANNEL1: ${{ secrets.TOKEN_CHANNEL1 }}
+          TOKEN_CHANNEL2: ${{ secrets.TOKEN_CHANNEL2 }}
+          TOKEN_CHANNEL3: ${{ secrets.TOKEN_CHANNEL3 }}
+          TOKEN_CHANNEL4: ${{ secrets.TOKEN_CHANNEL4 }}
+          TOKEN_CHANNEL5: ${{ secrets.TOKEN_CHANNEL5 }}
+          CLIENT_SECRET_DRIVE: ${{ secrets.CLIENT_SECRET_DRIVE }}
+          TOKEN_DRIVE: ${{ secrets.TOKEN_DRIVE }}
+        run: |
+          mkdir -p credentials
+          echo "$CONFIG_YAML" > config.yaml
+          echo "$CLIENT_SECRET_CHANNEL1" > credentials/client_secret_channel1.json
+          echo "$CLIENT_SECRET_CHANNEL2" > credentials/client_secret_channel2.json
+          echo "$CLIENT_SECRET_CHANNEL3" > credentials/client_secret_channel3.json
+          echo "$CLIENT_SECRET_CHANNEL4" > credentials/client_secret_channel4.json
+          echo "$CLIENT_SECRET_CHANNEL5" > credentials/client_secret_channel5.json
+          echo "$TOKEN_CHANNEL1" > credentials/token_channel1.json
+          echo "$TOKEN_CHANNEL2" > credentials/token_channel2.json
+          echo "$TOKEN_CHANNEL3" > credentials/token_channel3.json
+          echo "$TOKEN_CHANNEL4" > credentials/token_channel4.json
+          echo "$TOKEN_CHANNEL5" > credentials/token_channel5.json
+          # Only relevant if google_drive.enabled is true in config.yaml —
+          # writes empty files otherwise (harmless, script won't use them).
+          echo "$CLIENT_SECRET_DRIVE" > credentials/client_secret_drive.json
+          echo "$TOKEN_DRIVE" > credentials/token_drive.json
+          # (If you have fewer than 5 channels, leave the unused secrets empty in
+          # GitHub — this just writes empty files for them, which the script
+          # simply won't find valid clients for and will skip.)
+
+      - name: Run the pipeline
+        run: python mega_to_youtube.py --run-all
+
+      - name: Verify nothing was lost (informational — won't fail the run)
+        continue-on-error: true
+        run: python verify_mega_pipeline.py
+
+      - name: Commit updated manifest/inventory/logs back to the repo
+        run: |
+          git config user.name "mega2yt-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add manifest.csv inventory.csv logs/ 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Update manifest/logs [automated]"
+          git push

@@ -1,0 +1,81 @@
+name: drive2mega-yt
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 3 * * *"     # daily at 03:00 UTC — offset from the other workflow so they don't compete for the same runner resources at the same instant
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install mega-cmd
+        run: |
+          wget -q https://mega.nz/linux/repo/xUbuntu_22.04/amd64/megacmd-xUbuntu_22.04_amd64.deb
+          sudo apt-get update -qq
+          sudo apt-get install -y ./megacmd-xUbuntu_22.04_amd64.deb
+
+      - name: Reconstruct config and credentials from Secrets
+        env:
+          CONFIG_DRIVE_SOURCE_YAML: ${{ secrets.CONFIG_DRIVE_SOURCE_YAML }}
+          CLIENT_SECRET_DRIVE_SOURCE: ${{ secrets.CLIENT_SECRET_DRIVE_SOURCE }}
+          TOKEN_DRIVE_SOURCE: ${{ secrets.TOKEN_DRIVE_SOURCE }}
+          CLIENT_SECRET_CHANNEL1: ${{ secrets.CLIENT_SECRET_CHANNEL1 }}
+          CLIENT_SECRET_CHANNEL2: ${{ secrets.CLIENT_SECRET_CHANNEL2 }}
+          CLIENT_SECRET_CHANNEL3: ${{ secrets.CLIENT_SECRET_CHANNEL3 }}
+          CLIENT_SECRET_CHANNEL4: ${{ secrets.CLIENT_SECRET_CHANNEL4 }}
+          CLIENT_SECRET_CHANNEL5: ${{ secrets.CLIENT_SECRET_CHANNEL5 }}
+          TOKEN_CHANNEL1: ${{ secrets.TOKEN_CHANNEL1 }}
+          TOKEN_CHANNEL2: ${{ secrets.TOKEN_CHANNEL2 }}
+          TOKEN_CHANNEL3: ${{ secrets.TOKEN_CHANNEL3 }}
+          TOKEN_CHANNEL4: ${{ secrets.TOKEN_CHANNEL4 }}
+          TOKEN_CHANNEL5: ${{ secrets.TOKEN_CHANNEL5 }}
+        run: |
+          mkdir -p credentials
+          echo "$CONFIG_DRIVE_SOURCE_YAML" > config_drive_source.yaml
+          echo "$CLIENT_SECRET_DRIVE_SOURCE" > credentials/client_secret_drive_source.json
+          echo "$TOKEN_DRIVE_SOURCE" > credentials/token_drive_source.json
+          echo "$CLIENT_SECRET_CHANNEL1" > credentials/client_secret_channel1.json
+          echo "$CLIENT_SECRET_CHANNEL2" > credentials/client_secret_channel2.json
+          echo "$CLIENT_SECRET_CHANNEL3" > credentials/client_secret_channel3.json
+          echo "$CLIENT_SECRET_CHANNEL4" > credentials/client_secret_channel4.json
+          echo "$CLIENT_SECRET_CHANNEL5" > credentials/client_secret_channel5.json
+          echo "$TOKEN_CHANNEL1" > credentials/token_channel1.json
+          echo "$TOKEN_CHANNEL2" > credentials/token_channel2.json
+          echo "$TOKEN_CHANNEL3" > credentials/token_channel3.json
+          echo "$TOKEN_CHANNEL4" > credentials/token_channel4.json
+          echo "$TOKEN_CHANNEL5" > credentials/token_channel5.json
+          # 30 Mega account credentials live INSIDE config_drive_source.yaml
+          # itself (the CONFIG_DRIVE_SOURCE_YAML secret) rather than as 30
+          # separate secrets — simpler to manage at that scale.
+
+      - name: Run the pipeline
+        run: python drive_to_mega_youtube.py --run-all
+
+      - name: Verify nothing was lost (informational — won't fail the run)
+        continue-on-error: true
+        run: python verify_drive_pipeline.py
+
+      - name: Commit updated manifest/logs back to the repo
+        run: |
+          git config user.name "drive2mega-yt-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add manifest_drive_source.csv logs/ 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "Update manifest/logs [automated]"
+          git push
