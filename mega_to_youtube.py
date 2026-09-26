@@ -350,29 +350,51 @@ def run_oauth_flow(flow, label):
     `InstalledAppFlow.run_console()` was deprecated and then REMOVED in
     google-auth-oauthlib 1.2+ -- calling it raises AttributeError, which used
     to break `--authorize-only` outright. The supported path is
-    `run_local_server()`, which opens the browser and captures the redirect on
-    a temporary localhost port.
+    `run_local_server()`.
 
-    Two fallbacks, in order:
-      1. run_local_server(port=0)  - browser opens, redirect captured locally
-      2. print URL, paste the code - for locked-down machines where localhost
-         binding is blocked (some corporate firewalls, WSL2 port forwarding)
+    Two details matter and are easy to get wrong:
+
+    - `redirect_uri_trailing_slash` must be False. The library defaults it to
+      True and builds `http://localhost:PORT/`, but a Desktop-app client's
+      registered redirect URI is `http://localhost`. The trailing-slash
+      mismatch is rejected by Google with a bare
+      "400. That's an error. The server cannot process the request because it
+      is malformed." and no useful detail.
+    - `access_type="offline"` is requested explicitly. Without it a refresh
+      token is not guaranteed, and without a refresh token the generated
+      token file dies at the first expiry instead of renewing itself.
+
+    Falls back to a print-the-URL / paste-the-code flow if the local server
+    cannot start (blocked localhost binding, restrictive firewall).
     """
     if hasattr(flow, "run_local_server"):
         try:
-            return flow.run_local_server(port=0, open_browser=True,
-                                        success_message="Authorization complete.")
+            return flow.run_local_server(
+                host="localhost",
+                port=0,
+                open_browser=True,
+                redirect_uri_trailing_slash=False,
+                access_type="offline",
+                prompt="consent",
+                success_message=("Authorization complete. You can close this tab "
+                                 "and return to PowerShell."),
+            )
         except Exception as e:
-            log(f"Local redirect server could not start ({e}). Falling back to a copy/paste code.")
+            log(f"Local redirect server could not start ({e}). "
+                f"Falling back to a copy/paste code.")
     else:
         log("This version of google-auth-oauthlib has no run_local_server(); "
             "using a copy/paste code instead.")
 
-    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+    auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent",
+                                         redirect_uri="urn:ietf:wg:oauth:2.0:oob")
     print("\n" + "=" * 70)
-    print("Open this URL in your browser and sign in:\n")
+    print(f"Open this URL in your browser to authorize {label}:\n")
     print(auth_url)
-    print("\n" + "=" * 70)
+    print("\nIf Google shows a 400 error, the OAuth consent screen for this")
+    print("project is probably incomplete, or your Google account is not listed")
+    print("as a test user on it.")
+    print("=" * 70)
     code = input("Paste the authorization code here: ").strip()
     flow.fetch_token(code=code)
     return flow.credentials
