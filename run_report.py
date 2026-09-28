@@ -65,7 +65,15 @@ def row_done(row):
     """A file is done only if EVERY destination it actually has enabled
     succeeded. Checking only `status` would wrongly call a file complete when
     its YouTube upload worked but its Drive upload did not -- the pipeline
-    itself tracks those independently and will retry the failed one."""
+    itself tracks those independently and will retry the failed one.
+
+    MANIFEST INVARIANT: for a destination that is configured, its column is
+    ALWAYS written - success, failed, or pending. A blank column therefore
+    means only one thing: that destination is not configured for this file.
+    That is what makes a blank safe to ignore here; without the invariant a
+    blank is ambiguous and a Drive-succeeded/YouTube-pending row would be
+    miscounted as finished.
+    """
     present = [c for c in STATUS_COLUMNS if row.get(c) not in (None, "")]
     if not present:
         return False

@@ -830,10 +830,30 @@ def run(config, single_file_test=False, retry_failed_only=False):
             log(f"Re-checking YouTube quota ({files_since_probe} file(s) since last check) ...")
             channel_name = channel_names[channel_cycle_idx % len(channel_names)]
             channel_cycle_idx += 1
+            # Reset whether or not the probe succeeds. Without this the counter
+            # stays above the threshold and EVERY subsequent file is probed,
+            # which hammers a blocked channel once per file instead of once per
+            # interval.
+            files_since_probe = 0
 
         # --- YouTube upload ---
         if channel_name is None:
-            pass  # blocked: Drive-only for this file
+            # Blocked by the channel's upload allowance, or a probe just failed.
+            #
+            # Record the row as explicitly PENDING rather than leaving the status
+            # column blank. A blank column is ambiguous: a completeness check
+            # cannot tell "this destination is not enabled" from "not attempted
+            # yet", so it used to treat a Drive-succeeded/YouTube-pending file as
+            # finished. That made the run report and the dispatcher both believe
+            # the backlog was clear while YouTube had in fact uploaded nothing.
+            upsert_manifest_row(
+                rows, timestamp=datetime.now().isoformat(), mega_account=alias,
+                mega_remote_path=remote_path, filename=item["filename"],
+                file_size_bytes=item["file_size_bytes"] or "",
+                mega_modified=item["mega_modified"].isoformat() if item["mega_modified"] else "",
+                youtube_channel="", youtube_video_id="", status="pending",
+                error="youtube upload allowance exhausted; pending",
+            )
         elif yt_done:
             log("  (skipping YouTube — already succeeded previously; only Drive is pending for this file)")
         else:
@@ -858,7 +878,17 @@ def run(config, single_file_test=False, retry_failed_only=False):
                 log(f"Channel '{channel_name}' hit its daily quota ({e}). Marking exhausted; "
                     f"{'Drive continues' if drive_enabled else 'stopping'} — will retry this file on a later run.")
                 clients[channel_name]["exhausted_today"] = True
-                # deliberately NOT marked failed — no row written, so a future run just tries it again
+                # Explicitly pending, not a blank column - see the note where the
+                # blocked branch records its row. A blank status is ambiguous and
+                # gets read as "nothing to do here" by the completeness checks.
+                upsert_manifest_row(
+                    rows, timestamp=datetime.now().isoformat(), mega_account=alias,
+                    mega_remote_path=remote_path, filename=item["filename"],
+                    file_size_bytes=item["file_size_bytes"] or "",
+                    mega_modified=item["mega_modified"].isoformat() if item["mega_modified"] else "",
+                    youtube_channel="", youtube_video_id="", status="pending",
+                    error=f"quota: {e}",
+                )
             except Exception as e:
                 log(f"FAILED (upload, {MAX_RETRIES} attempts exhausted): {local_file.name}: {e}")
                 upsert_manifest_row(
@@ -886,7 +916,14 @@ def run(config, single_file_test=False, retry_failed_only=False):
             except QuotaExceeded as e:
                 log(f"Google Drive hit its quota/storage limit ({e}). Skipping Drive uploads for the rest of this run; will retry on a later run.")
                 drive_exhausted_today = True
-                # not marked failed — no drive_status written, so a future run retries it
+                # Explicitly pending, never blank. See the manifest invariant:
+                # an ENABLED destination's column is always written, so blank can
+                # only ever mean "this destination is not configured".
+                upsert_manifest_row(
+                    rows, mega_account=alias, mega_remote_path=remote_path,
+                    filename=item["filename"], file_size_bytes=item["file_size_bytes"] or "",
+                    drive_status="pending", drive_file_id="", drive_error=f"quota: {e}",
+                )
             except PermanentApiError as e:
                 # Needs a human in Google Cloud, not another attempt. Stop trying
                 # Drive for the rest of the run and say exactly what to fix, so
@@ -907,7 +944,12 @@ def run(config, single_file_test=False, retry_failed_only=False):
                 log("=" * 70)
                 drive_exhausted_today = True
                 drive_blocked_reason = str(e)
-                # not marked failed — no drive_status written, so a future run retries it
+                # Explicitly pending, never blank - see the manifest invariant.
+                upsert_manifest_row(
+                    rows, mega_account=alias, mega_remote_path=remote_path,
+                    filename=item["filename"], file_size_bytes=item["file_size_bytes"] or "",
+                    drive_status="pending", drive_file_id="", drive_error=str(e),
+                )
             except Exception as e:
                 log(f"FAILED (Drive upload, {MAX_RETRIES} attempts exhausted): {local_file.name}: {e}")
                 upsert_manifest_row(

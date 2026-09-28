@@ -93,7 +93,21 @@ jobs:
         continue-on-error: true
         run: python verify_drive_pipeline.py
 
+      - name: Preserve manifest and logs as an artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: drive2mega-yt-manifest-${{ github.run_id }}
+          path: |
+            manifest_drive_source.csv
+            logs/
+          retention-days: 30
+          if-no-files-found: ignore
+
       - name: Commit updated manifest/logs back to the repo
+        # Never fail the job over a bookkeeping push - see the note in
+        # mega-to-youtube-workflow.yml. The artifact above holds the manifest.
+        continue-on-error: true
         run: |
           git config user.name "drive2mega-yt-bot"
           git config user.email "actions@users.noreply.github.com"
@@ -108,7 +122,17 @@ jobs:
           done
           if git diff --cached --quiet; then
             echo "nothing to commit"
-          else
-            git commit -q -m "Update manifest/logs [automated]"
-            git push
+            exit 0
           fi
+          git commit -q -m "Update manifest/logs [automated]"
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push attempt $attempt rejected; rebasing onto origin/main and retrying"
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            sleep 5
+          done
+          echo "::warning::could not push the manifest after 3 attempts."
+          echo "The manifest is preserved in this run's artifact; restore it if needed."
