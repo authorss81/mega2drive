@@ -96,6 +96,21 @@ jobs:
         run: |
           git config user.name "mega2yt-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add manifest.csv inventory.csv logs/ 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Update manifest/logs [automated]"
-          git push
+          # Add each path separately. `git add a b c` is ATOMIC: if any one of the
+          # pathspecs matches nothing (inventory.csv only exists after --list-only)
+          # the whole command fails and NOTHING is added - not even the manifest,
+          # not even the run report. That failure was invisible because of the
+          # 2>/dev/null, so the job reported success while committing nothing.
+          for f in manifest.csv inventory.csv logs/; do
+            if [ -e "$f" ]; then
+              git add -A "$f"
+            else
+              echo "skip (not present): $f"
+            fi
+          done
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -q -m "Update manifest/logs [automated]"
+            git push
+          fi

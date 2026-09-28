@@ -98,6 +98,19 @@ VIDEO_EXTENSIONS = {".mkv", ".mp4", ".mov", ".avi", ".webm", ".m4v"}  # fallback
                                                                         # allowed_extensions (if set) overrides this
 
 QUOTA_ERROR_REASONS = {"quotaExceeded", "uploadLimitExceeded", "dailyLimitExceeded"}
+
+# Google error reasons that are PERMANENT for the whole run, not transient.
+# Retrying them per file is pure waste: an API that was never enabled will
+# still not be enabled 20 seconds later, and a 403 permission error will not
+# become permitted. Each wasted retry costs 10s + 20s of sleep per file, which
+# across a 250-file library is hours of a 6-hour job doing nothing.
+#
+# accessNotConfigured is the common one: "Google Drive API has not been used
+# in project X before or it is disabled" - the API simply isn't switched on in
+# Google Cloud. Fixing it needs a human in the console, so the run should stop
+# trying immediately and say so, not grind through the backlog failing.
+PERMANENT_ERROR_REASONS = {"accessNotConfigured", "forbidden", "insufficientPermissions",
+                           "PERMISSION_DENIED", "SERVICE_DISABLED"}
 MAX_RETRIES = 3
 BACKOFF_BASE_SECONDS = 10  # 10s, 20s, 40s
 
@@ -344,6 +357,12 @@ class QuotaExceeded(Exception):
     pass
 
 
+class PermanentApiError(Exception):
+    """An API/permission problem that retrying cannot fix - the API is disabled
+    in the project, or the token lacks the scope. Retrying wastes the whole
+    job, so these abort the run's remaining work for that destination."""
+
+
 def run_oauth_flow(flow, label):
     """Complete an installed-app OAuth flow, whatever the library version.
 
@@ -477,6 +496,15 @@ def upload_to_drive_once(drive, filepath, folder_id=None):
             # Drive's quota errors use different reason strings than YouTube's
             if reason in {"quotaExceeded", "userRateLimitExceeded", "storageQuotaExceeded"}:
                 raise QuotaExceeded(reason)
+            # An API that was never enabled, or a scope the token lacks, will
+            # fail identically on every retry for every remaining file. Surface
+            # it as permanent so the run stops guessing.
+            if reason in PERMANENT_ERROR_REASONS or e.resp.status == 403:
+                raise PermanentApiError(
+                    f"{reason or 'HTTP 403'} - the Google Drive API may not be enabled for "
+                    f"this project, or the token lacks the Drive scope. Check "
+                    f"APIs & Services > Library > Google Drive API in Google Cloud."
+                )
             raise
     return response.get("id")
 
@@ -487,6 +515,9 @@ def upload_to_drive_with_retry(drive, filepath, folder_id=None):
         try:
             return upload_to_drive_once(drive, filepath, folder_id), attempt
         except QuotaExceeded:
+            raise
+        except PermanentApiError:
+            # Not worth another attempt - see PERMANENT_ERROR_REASONS.
             raise
         except Exception as e:
             last_error = e
@@ -665,6 +696,7 @@ def run(config, single_file_test=False, retry_failed_only=False):
 
     drive_client = None
     drive_exhausted_today = False
+    drive_blocked_reason = None
     drive_cfg = config.get("google_drive")
     if drive_cfg and drive_cfg.get("enabled", False):
         drive_client = get_drive_client(drive_cfg)
@@ -805,6 +837,27 @@ def run(config, single_file_test=False, retry_failed_only=False):
                 log(f"Google Drive hit its quota/storage limit ({e}). Skipping Drive uploads for the rest of this run; will retry on a later run.")
                 drive_exhausted_today = True
                 # not marked failed — no drive_status written, so a future run retries it
+            except PermanentApiError as e:
+                # Needs a human in Google Cloud, not another attempt. Stop trying
+                # Drive for the rest of the run and say exactly what to fix, so
+                # the remaining YouTube uploads still get their 6 hours.
+                log("=" * 70)
+                log(f"STOPPING Google Drive uploads for this run: {e}")
+                log("")
+                log("This is a project/API configuration problem, not a per-file failure,")
+                log("so retrying would fail identically for all 250+ remaining files.")
+                log("")
+                log("To fix:")
+                log("  1. Google Cloud Console > your project > APIs & Services > Library")
+                log("  2. Search 'Google Drive API' > Enable   (this is the usual cause)")
+                log("  3. If it is already enabled, check the Drive account is added as a")
+                log("     test user on the OAuth consent screen")
+                log("")
+                log("YouTube uploads are unaffected and will continue.")
+                log("=" * 70)
+                drive_exhausted_today = True
+                drive_blocked_reason = str(e)
+                # not marked failed — no drive_status written, so a future run retries it
             except Exception as e:
                 log(f"FAILED (Drive upload, {MAX_RETRIES} attempts exhausted): {local_file.name}: {e}")
                 upsert_manifest_row(
@@ -821,7 +874,11 @@ def run(config, single_file_test=False, retry_failed_only=False):
             log("Test-single mode: stopping after one file.")
             return
 
-    log("Run complete.")
+    if drive_exhausted_today and drive_blocked_reason:
+        log("Run complete, with Google Drive disabled for this run (see the reason above).")
+        log("Drive copies are pending in the manifest and will be attempted on the next run.")
+    else:
+        log("Run complete.")
 
 
 def authorize_all(config):

@@ -94,6 +94,18 @@ jobs:
         run: |
           git config user.name "drive2mega-yt-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add manifest_drive_source.csv logs/ 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "Update manifest/logs [automated]"
-          git push
+          # Add each path separately: `git add a b` is ATOMIC, so one missing
+          # pathspec silently aborted the whole add and committed nothing.
+          for f in manifest_drive_source.csv logs/; do
+            if [ -e "$f" ]; then
+              git add -A "$f"
+            else
+              echo "skip (not present): $f"
+            fi
+          done
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -q -m "Update manifest/logs [automated]"
+            git push
+          fi

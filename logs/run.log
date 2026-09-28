@@ -1,1 +1,5 @@
 [2026-09-26 22:12:19] --- Authorize channel 'channel1' (browser will open) ---
+[2026-09-27 07:37:20] --- Authorize channel 'channel1' (browser will open) ---
+[2026-09-27 07:37:33] Channel 'channel1' authorized (or already had a valid token).
+[2026-09-27 07:37:33] --- Authorize Google Drive (browser will open) ---
+[2026-09-27 07:37:48] Google Drive authorized (or already had a valid token).
