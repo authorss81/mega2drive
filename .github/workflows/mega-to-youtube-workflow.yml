@@ -3,7 +3,13 @@ name: mega2yt
 on:
   workflow_dispatch: {}          # lets you click "Run workflow" manually in the Actions tab
   schedule:
-    - cron: "0 1 * * *"          # daily at 01:00 UTC — edit to taste; GitHub cron syntax is standard 5-field cron
+    # Every 6 hours, matching the job's own timeout. Combined with the
+    # concurrency group below, a run is always queued and ready to start the
+    # moment the previous one finishes - so a large backlog drains continuously
+    # instead of sitting idle until tomorrow. GitHub queues overlapping runs
+    # rather than starting them in parallel, and the manifest makes each one
+    # resume where the last left off.
+    - cron: "0 */6 * * *"
 
 permissions:
   contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo

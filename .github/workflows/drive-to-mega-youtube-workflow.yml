@@ -3,7 +3,10 @@ name: drive2mega-yt
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 3 * * *"     # daily at 03:00 UTC — offset from the other workflow so they don't compete for the same runner resources at the same instant
+    # Every 6 hours, offset by 30 minutes from mega2yt so the two pipelines
+    # don't target the same start time. See the note in
+    # mega-to-youtube-workflow.yml about why this is more often than daily.
+    - cron: "30 */6 * * *"
 
 permissions:
   contents: write
