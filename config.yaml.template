@@ -56,6 +56,24 @@ youtube_channels:
     token_file: "credentials/token_channel2.json"
   # ... add up to 5 total
 
+# --- WHAT TO DO WHEN YOUTUBE'S UPLOAD ALLOWANCE RUNS OUT ---
+# YouTube caps uploads per channel per day, and the API reports
+# uploadLimitExceeded when it is hit. Drive has its own, much larger capacity
+# and no daily cap, so it is wasteful for one blocked YouTube day to also
+# abandon the Drive copies.
+drive_when_youtube_blocked:
+  # true  = when every channel is quota-blocked, keep going and upload the
+  #         remaining files to Drive only, leaving them pending for YouTube
+  # false = old behaviour: stop the whole run when YouTube is blocked
+  upload_drive_when_youtube_blocked: true
+
+  # How many files to send to Drive before trying YouTube again, in case the
+  # allowance has reset mid-run. Probing is just the normal upload attempt for
+  # that file, so it costs nothing extra - a success means the block is over
+  # and YouTube picks straight back up. Set 0 to only retry on the next
+  # scheduled run instead.
+  youtube_quota_recheck_every: 25
+
 # --- GOOGLE DRIVE (optional second destination) ---
 # If enabled, every video is uploaded to BOTH YouTube AND this Drive account,
 # from the same local download — independent success/failure tracking per

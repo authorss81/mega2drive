@@ -323,6 +323,36 @@ Once that works, the daily schedule takes over. Nothing further to do.
 
 ---
 
+## When YouTube's daily allowance runs out
+
+YouTube caps uploads per channel per day and the API returns
+`uploadLimitExceeded` when you hit it. Historically that stopped the entire
+run, which also abandoned the Drive copy of every remaining file — so one
+blocked YouTube day left the whole library un-backed-up.
+
+```yaml
+drive_when_youtube_blocked:
+  upload_drive_when_youtube_blocked: true   # keep uploading to Drive
+  youtube_quota_recheck_every: 25            # probe YouTube every 25 files
+```
+
+With this on, once every channel is quota-blocked the run continues and
+uploads the remaining files to **Drive only**. Those files stay pending for
+YouTube in the manifest and are retried on a later run.
+
+Every `youtube_quota_recheck_every` files it makes a normal YouTube upload
+attempt for the current file. That probe costs nothing extra — a success means
+the allowance has come back and YouTube resumes immediately, mid-run. Set it to
+`0` to skip probing and only retry on the next scheduled run.
+
+Because a failed probe is just a normal quota error, the blocked channel is
+never spammed: 253 files at the default interval is 10 probes, not 253.
+
+Setting `upload_drive_when_youtube_blocked: false` restores the old
+stop-the-run behaviour.
+
+---
+
 ## Gotchas
 
 **2FA breaks this pipeline.** `mega-login` is called with no TFA argument, and

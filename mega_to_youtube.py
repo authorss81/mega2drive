@@ -697,6 +697,18 @@ def run(config, single_file_test=False, retry_failed_only=False):
     drive_client = None
     drive_exhausted_today = False
     drive_blocked_reason = None
+
+    # YouTube-blocked-but-keep-going-on-Drive behaviour.
+    # youtube_recheck_every: how many files to push to Drive before trying
+    # YouTube again. 0 disables probing (YouTube is then only retried on the
+    # next scheduled run). A modest value catches a quota reset mid-run without
+    # spamming a blocked channel with doomed requests.
+    drive_cfg_for_opts = config.get("drive_when_youtube_blocked") or {}
+    upload_drive_when_yt_blocked = bool(
+        drive_cfg_for_opts.get("upload_drive_when_youtube_blocked", True))
+    youtube_recheck_every = int(drive_cfg_for_opts.get("youtube_quota_recheck_every", 25) or 0)
+    youtube_blocked = False
+    files_since_probe = 0
     drive_cfg = config.get("google_drive")
     if drive_cfg and drive_cfg.get("enabled", False):
         drive_client = get_drive_client(drive_cfg)
@@ -747,15 +759,41 @@ def run(config, single_file_test=False, retry_failed_only=False):
             continue  # already confirmed unreachable this run — don't waste time re-attempting per file;
                        # will be retried fresh on the NEXT scheduled run, in case it's back by then
 
+        # --- YouTube availability -------------------------------------------
+        # When every channel has exhausted its upload allowance, the run used to
+        # stop dead with `return`, which also abandoned the Drive half of every
+        # remaining file. Since Drive has its own quota and 5.5 TB of headroom,
+        # that meant one blocked YouTube day left the whole library un-backed-up.
+        #
+        # Instead: keep going for Drive, and periodically re-probe YouTube to
+        # pick the work back up if the allowance has reset mid-run.
         available = [n for n in channel_names if not clients[n]["exhausted_today"]]
+        channel_name = None
         if not available:
-            log("All channels have hit their daily upload quota. Stopping run — cron will resume once quota resets.")
-            save_manifest_rows(config, rows)
-            return
-
-        channel_cycle_idx = channel_cycle_idx % len(available)
-        channel_name = available[channel_cycle_idx]
-        channel_cycle_idx += 1
+            if not (drive_enabled and upload_drive_when_yt_blocked):
+                log("All channels have hit their daily upload quota and no Drive "
+                    "destination is enabled — stopping run.")
+                save_manifest_rows(config, rows)
+                return
+            if not youtube_blocked:
+                youtube_blocked = True
+                log("All channels have hit their daily upload quota.")
+                log("Continuing with GOOGLE DRIVE ONLY for the rest of this run, and "
+                    "re-checking YouTube every "
+                    f"{youtube_recheck_every} file(s) in case the allowance resets.")
+                log("Files handled this way stay pending for YouTube in the manifest and "
+                    "are retried on a later run.")
+            files_since_probe += 1
+            due_for_probe = files_since_probe >= youtube_recheck_every
+        else:
+            if youtube_blocked:
+                log("YouTube quota is available again — resuming YouTube uploads.")
+                youtube_blocked = False
+            channel_cycle_idx = channel_cycle_idx % len(available)
+            channel_name = available[channel_cycle_idx]
+            channel_cycle_idx += 1
+            files_since_probe = 0
+            due_for_probe = False
 
         # Re-login only if the session has actually moved to a different
         # account since the last file — avoids a pointless re-login on every
@@ -785,10 +823,21 @@ def run(config, single_file_test=False, retry_failed_only=False):
             save_manifest_rows(config, rows)
             continue
 
-        log(f"Uploading {local_file.name} to channel '{channel_name}' ...")
-        if yt_done:
-            log("  (skipping — already succeeded on YouTube previously; only Drive is pending for this file)")
+        if channel_name is None and due_for_probe:
+            # Time to find out whether the YouTube allowance came back. Probing
+            # is just the normal upload attempt for this file, so it costs
+            # nothing extra — if it lands, the block is genuinely over.
+            log(f"Re-checking YouTube quota ({files_since_probe} file(s) since last check) ...")
+            channel_name = channel_names[channel_cycle_idx % len(channel_names)]
+            channel_cycle_idx += 1
+
+        # --- YouTube upload ---
+        if channel_name is None:
+            pass  # blocked: Drive-only for this file
+        elif yt_done:
+            log("  (skipping YouTube — already succeeded previously; only Drive is pending for this file)")
         else:
+            log(f"Uploading {local_file.name} to channel '{channel_name}' ...")
             try:
                 video_id, ul_attempts = upload_video_with_retry(
                     clients[channel_name]["client"], local_file, title=local_file.stem,
@@ -806,7 +855,8 @@ def run(config, single_file_test=False, retry_failed_only=False):
                     status="success", attempts=ul_attempts, error="",
                 )
             except QuotaExceeded as e:
-                log(f"Channel '{channel_name}' hit its daily quota ({e}). Marking exhausted for today; will retry this file on a later run.")
+                log(f"Channel '{channel_name}' hit its daily quota ({e}). Marking exhausted; "
+                    f"{'Drive continues' if drive_enabled else 'stopping'} — will retry this file on a later run.")
                 clients[channel_name]["exhausted_today"] = True
                 # deliberately NOT marked failed — no row written, so a future run just tries it again
             except Exception as e:
@@ -879,6 +929,10 @@ def run(config, single_file_test=False, retry_failed_only=False):
         log("Drive copies are pending in the manifest and will be attempted on the next run.")
     else:
         log("Run complete.")
+    if youtube_blocked:
+        log("Note: YouTube's upload allowance was still exhausted when this run ended. "
+            "Those files remain pending for YouTube in the manifest and will be "
+            "retried on the next scheduled run.")
 
 
 def authorize_all(config):
