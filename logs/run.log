@@ -3,3 +3,42 @@
 [2026-09-27 07:37:33] Channel 'channel1' authorized (or already had a valid token).
 [2026-09-27 07:37:33] --- Authorize Google Drive (browser will open) ---
 [2026-09-27 07:37:48] Google Drive authorized (or already had a valid token).
+[2026-09-28 09:05:24] Listing videos in MEGA account: mega_account_1
+[2026-09-28 09:05:25]   -> 15 video(s) found
+[2026-09-28 09:05:25] Listing videos in MEGA account: mega_account_2
+[2026-09-28 09:05:27]   -> 16 video(s) found
+[2026-09-28 09:05:27] Listing videos in MEGA account: mega_account_3
+[2026-09-28 09:05:29]   -> 12 video(s) found
+[2026-09-28 09:05:29] Listing videos in MEGA account: mega_account_4
+[2026-09-28 09:05:30] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-09-28_09-05-30.463724 cmd ERR  Login failed: invalid email or password]
+[2026-09-28 09:05:30] Listing videos in MEGA account: mega_account_5
+[2026-09-28 09:05:32]   -> 12 video(s) found
+[2026-09-28 09:05:32] Listing videos in MEGA account: mega_account_6
+[2026-09-28 09:05:33]   -> 14 video(s) found
+[2026-09-28 09:05:33] Listing videos in MEGA account: mega_account_7
+[2026-09-28 09:05:35]   -> 12 video(s) found
+[2026-09-28 09:05:35] Listing videos in MEGA account: mega_account_8
+[2026-09-28 09:05:37]   -> 11 video(s) found
+[2026-09-28 09:05:37] Listing videos in MEGA account: mega_account_9
+[2026-09-28 09:05:39]   -> 58 video(s) found
+[2026-09-28 09:05:39] Listing videos in MEGA account: mega_account_10
+[2026-09-28 09:05:41]   -> 20 video(s) found
+[2026-09-28 09:05:41] Listing videos in MEGA account: mega_account_11
+[2026-09-28 09:05:42]   -> 12 video(s) found
+[2026-09-28 09:05:42] Listing videos in MEGA account: mega_account_12
+[2026-09-28 09:05:44]   -> 48 video(s) found
+[2026-09-28 09:05:44] Listing videos in MEGA account: mega_account_13
+[2026-09-28 09:05:46]   -> 4 video(s) found
+[2026-09-28 09:05:46] Listing videos in MEGA account: mega_account_73
+[2026-09-28 09:05:48]   -> 19 video(s) found
+[2026-09-28 09:05:48] Listing videos in MEGA account: mega_account_78
+[2026-09-28 09:05:49] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-09-28_09-05-49.773236 cmd ERR  Login failed: invalid email or password]
+[2026-09-28 09:05:49] Switching MEGA session to mega_account_1 ...
+[2026-09-28 09:05:51] Downloading /New folder/2026-07-23 18-16-01.mkv from mega_account_1 ...
+[2026-09-28 09:05:57] Uploading 2026-07-23 18-16-01.mkv to channel 'channel1' ...
+[2026-09-28 09:05:57] Channel 'channel1' hit its daily quota (uploadLimitExceeded). Marking exhausted for today; will retry this file on a later run.
+[2026-09-28 09:05:57] Uploading 2026-07-23 18-16-01.mkv to Google Drive ...
+[2026-09-28 09:06:07] SUCCESS: 2026-07-23 18-16-01.mkv -> Drive file id 1K7DOcYbWflHZoe-mahh7RY99_9nO31cH
+[2026-09-28 09:06:07] All channels have hit their daily upload quota. Stopping run — cron will resume once quota resets.
+[2026-09-28 09:06:14] MEGA login FAILED for mega_account_4 — account may not exist, be suspended, or have wrong credentials: [2026-09-28_09-06-14.696055 cmd ERR  Login failed: invalid email or password]
+[2026-09-28 09:06:33] MEGA login FAILED for mega_account_78 — account may not exist, be suspended, or have wrong credentials: [2026-09-28_09-06-33.979713 cmd ERR  Login failed: invalid email or password]

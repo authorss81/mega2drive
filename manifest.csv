@@ -1,0 +1,2 @@
+timestamp,mega_account,mega_remote_path,filename,file_size_bytes,mega_modified,youtube_channel,youtube_video_id,status,attempts,error,drive_status,drive_file_id,drive_error
+,mega_account_1,/New folder/2026-07-23 18-16-01.mkv,2026-07-23 18-16-01.mkv,612065696,,,,,,,success,1K7DOcYbWflHZoe-mahh7RY99_9nO31cH,
