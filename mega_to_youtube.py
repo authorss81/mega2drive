@@ -734,6 +734,7 @@ def run(config, single_file_test=False, retry_failed_only=False):
     youtube_recheck_every = int(drive_cfg_for_opts.get("youtube_quota_recheck_every", 25) or 0)
     youtube_blocked = False
     files_since_probe = 0
+    skipped_no_work = 0
     drive_cfg = config.get("google_drive")
     if drive_cfg and drive_cfg.get("enabled", False):
         drive_client = get_drive_client(drive_cfg)
@@ -819,6 +820,22 @@ def run(config, single_file_test=False, retry_failed_only=False):
             channel_cycle_idx += 1
             files_since_probe = 0
             due_for_probe = False
+
+        # --- Skip without downloading --------------------------------------
+        # If YouTube is blocked, this file's Drive copy already exists, and a
+        # probe is not due, then there is literally nothing to do for it: the
+        # only remaining destination is the one that cannot accept uploads.
+        #
+        # Without this, every blocked file was still downloaded from MEGA, run
+        # past the quota check, and deleted again - re-transferring the whole
+        # library to the runner on every scheduled run just to be told "no".
+        # That was ~50 minutes and a full library's worth of traffic per run,
+        # forever, while YouTube stayed capped. The file stays pending in the
+        # manifest (no row is written), so it is still picked up the moment
+        # quota is available.
+        if youtube_blocked and not due_for_probe and drive_done:
+            skipped_no_work += 1
+            continue
 
         # Re-login only if the session has actually moved to a different
         # account since the last file — avoids a pointless re-login on every
@@ -1000,6 +1017,9 @@ def run(config, single_file_test=False, retry_failed_only=False):
         log("Note: YouTube's upload allowance was still exhausted when this run ended. "
             "Those files remain pending for YouTube in the manifest and will be "
             "retried on the next scheduled run.")
+    if skipped_no_work:
+        log(f"Skipped {skipped_no_work} file(s) without downloading: YouTube blocked and "
+            f"their Drive copy already exists, so there was nothing to do for them.")
 
 
 def authorize_all(config):
