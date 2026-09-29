@@ -1,12 +1,25 @@
 name: drive2mega-yt
 
+# ---------------------------------------------------------------------------
+# SCHEDULE IS DISABLED - this pipeline is not configured yet.
+#
+# It needs its own config (config_drive_source.yaml), its own Drive landing
+# folder, and its own MEGA storage accounts, none of which exist. While the
+# schedule was active it failed every 6 hours on a missing config, which put a
+# permanent red X in the Actions list and made it impossible to tell at a glance
+# whether the *other* pipeline - the one that matters - was healthy.
+#
+# workflow_dispatch is kept, so it can still be run by hand once configured.
+# To re-enable the schedule, uncomment the two schedule lines below.
+# ---------------------------------------------------------------------------
+
 on:
   workflow_dispatch: {}
-  schedule:
-    # Every 6 hours, offset by 30 minutes from mega2yt so the two pipelines
-    # don't target the same start time. See the note in
-    # mega-to-youtube-workflow.yml about why this is more often than daily.
-    - cron: "30 */6 * * *"
+  # schedule:
+  #   # Every 6 hours, offset by 30 minutes from mega2yt so the two pipelines
+  #   # don't target the same start time. See the note in
+  #   # mega-to-youtube-workflow.yml about why this is more often than daily.
+  #   - cron: "30 */6 * * *"
 
 permissions:
   contents: write
