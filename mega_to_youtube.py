@@ -97,7 +97,19 @@ DRIVE_SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 VIDEO_EXTENSIONS = {".mkv", ".mp4", ".mov", ".avi", ".webm", ".m4v"}  # fallback default; config.yaml's
                                                                         # allowed_extensions (if set) overrides this
 
-QUOTA_ERROR_REASONS = {"quotaExceeded", "uploadLimitExceeded", "dailyLimitExceeded"}
+QUOTA_ERROR_REASONS = {
+    "quotaExceeded",
+    "uploadLimitExceeded",
+    "dailyLimitExceeded",
+    # YouTube's daily "Video Uploads" cap comes back as HTTP 429 with reason
+    # rateLimitExceeded, not uploadLimitExceeded. Missing this was costly: the
+    # quota wall was treated as a transient error, so every blocked file burned
+    # 3 attempts with 10s+20s backoff (~30s) and was then written to the
+    # manifest as "failed" - and a normal run SKIPS failed rows, so those files
+    # were stranded rather than retried. One scheduled run marked 88 files
+    # failed and wasted ~44 minutes on retries that could never succeed.
+    "rateLimitExceeded",
+}
 
 # Google error reasons that are PERMANENT for the whole run, not transient.
 # Retrying them per file is pure waste: an API that was never enabled will
@@ -556,7 +568,20 @@ def upload_video_once(youtube, filepath, title, privacy_status, category_id, mad
                 pass
             if reason in QUOTA_ERROR_REASONS:
                 raise QuotaExceeded(reason)
-            raise  # transient/other error — handled by retry wrapper below
+            # Belt and braces: a 429 is a rate/quota signal whatever reason
+            # string it carries, and a 403 on insert means the API is not
+            # enabled or the channel is not eligible - neither improves by
+            # retrying.
+            http_status = getattr(getattr(e, "resp", None), "status", None)
+            if http_status == 429:
+                raise QuotaExceeded(reason or "http429")
+            if http_status == 403:
+                raise PermanentApiError(
+                    f"{reason or 'HTTP 403'} on videos.insert - the YouTube Data API "
+                    f"may not be enabled for this project, or the channel is not "
+                    f"eligible to upload. Check APIs & Services > Library."
+                )
+            raise  # transient/other error - handled by retry wrapper below
     return response.get("id")
 
 

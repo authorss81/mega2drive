@@ -34,6 +34,7 @@ import argparse
 import csv
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -79,8 +80,15 @@ DRIVE_SOURCE_SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 YOUTUBE_SCOPES = ["https://www.googleapis.com/auth/youtube.upload",
                   "https://www.googleapis.com/auth/youtube"]
 
-QUOTA_ERROR_REASONS_YT = {"quotaExceeded", "uploadLimitExceeded", "dailyLimitExceeded"}
-QUOTA_ERROR_REASONS_DRIVE = {"quotaExceeded", "userRateLimitExceeded"}
+# YouTube's daily "Video Uploads" cap returns HTTP 429 with reason
+# rateLimitExceeded. Without that in the set the quota wall is mistaken for a
+# transient failure: 3 attempts per file, then the file is written to the
+# manifest as "failed" - which a normal run then SKIPS, stranding it.
+# Drive's full-account error is storageQuotaExceeded.
+QUOTA_ERROR_REASONS_YT = {"quotaExceeded", "uploadLimitExceeded",
+                          "dailyLimitExceeded", "rateLimitExceeded"}
+QUOTA_ERROR_REASONS_DRIVE = {"quotaExceeded", "userRateLimitExceeded",
+                             "storageQuotaExceeded", "rateLimitExceeded"}
 MAX_RETRIES = 3
 BACKOFF_BASE_SECONDS = 10
 
