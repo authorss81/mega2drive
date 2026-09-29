@@ -11,3 +11,21 @@ downloads/
 # Python bytecode from local testing / compile checks
 __pycache__/
 *.pyc
+
+# Probing tools are deleted and must never be recreated.
+#
+# A script that walks email_pattern across n=1..100 and authenticates will get
+# the accounts locked: MEGA's fraud detection is not per-account as it first
+# appears. Every base+{n}@gmail.com alias delivers to the SAME real mailbox, so
+# 50 authentications against it in a few minutes reads as enumeration. That
+# locked an account on 2026-09-29.
+#
+# Their names stay here as a permanent safety net: if one is ever written again,
+# git ignores it by default rather than leaving it one `git add` from public.
+probe_accounts.py
+probe_passwords.py
+probe-mega-accounts.yml
+
+
+probe_passwords.py
+
