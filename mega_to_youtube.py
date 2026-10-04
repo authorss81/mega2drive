@@ -443,7 +443,17 @@ def _load_or_authorize(token_path, secret_path, scopes, label, authorize_only):
     """
     creds = None
     if token_path.exists():
-        creds = Credentials.from_authorized_user_file(str(token_path), scopes)
+        try:
+            creds = Credentials.from_authorized_user_file(str(token_path), scopes)
+        except Exception as e:
+            # A truncated or corrupt token file must be treated as "no token",
+            # not a crash. An earlier bug opened this file for writing and then
+            # died before writing, which left it 0 bytes and made every
+            # subsequent run fail with a bare JSONDecodeError - the one thing
+            # that would have fixed it was being able to re-authorize.
+            log(f"Token file for {label} is unreadable ({type(e).__name__}) - treating it "
+                f"as missing. It will be rewritten by the authorization step.")
+            creds = None
 
     if creds and creds.valid:
         return creds

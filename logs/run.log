@@ -3096,3 +3096,14 @@
 [2026-10-04 20:08:24] Token for YT cannot be refreshed (AttributeError) - expired or revoked.
 [2026-10-04 20:08:24] Re-authorizing now...
 [2026-10-04 20:08:24] ERROR: missing client secret file C:\Users\USER\AppData\Local\Temp\tmp3a8l5jqt\client_secret.json for YT
+[2026-10-04 20:32:49] Token for YT cannot be refreshed (AttributeError) - expired or revoked.
+[2026-10-04 20:32:49] Fix with: python mega_to_youtube.py --authorize-only
+[2026-10-04 20:32:49] Token for YT cannot be refreshed (AttributeError) - expired or revoked.
+[2026-10-04 20:32:49] Re-authorizing now...
+[2026-10-04 20:32:49] --- Authorize YT (browser will open) ---
+[2026-10-04 20:32:49] Saved token.json
+[2026-10-04 20:32:49] --- Authorize YT (browser will open) ---
+[2026-10-04 20:32:49] Saved token.json
+[2026-10-04 20:32:49] Token for YT cannot be refreshed (AttributeError) - expired or revoked.
+[2026-10-04 20:32:49] Re-authorizing now...
+[2026-10-04 20:32:49] ERROR: missing client secret file C:\Users\USER\AppData\Local\Temp\tmpkei1d2z6\client_secret.json for YT
