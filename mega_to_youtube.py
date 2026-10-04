@@ -441,7 +441,17 @@ def get_youtube_client(channel_cfg, authorize_only=False):
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                # An expired refresh token cannot be renewed - it must be
+                # re-authorised. Uncaught, this aborted the whole run with a
+                # stack trace, and took the Drive destination down with it even
+                # when Drive's own token was perfectly fine.
+                log(f"ERROR: YouTube token for channel '{channel_cfg['name']}' cannot be "
+                    f"refreshed ({type(e).__name__}) - expired or revoked. Fix with: "
+                    f"python mega_to_youtube.py --authorize-only")
+                return None
         else:
             if not secret_path.exists():
                 log(f"ERROR: missing client secret file {secret_path} for channel {channel_cfg['name']}")
@@ -471,7 +481,13 @@ def get_drive_client(drive_cfg, authorize_only=False):
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                log(f"ERROR: Google Drive token cannot be refreshed ({type(e).__name__}) - "
+                    f"expired or revoked. Fix with: "
+                    f"python mega_to_youtube.py --authorize-only")
+                return None
         else:
             if not secret_path.exists():
                 log(f"ERROR: missing client secret file {secret_path} for Google Drive")
