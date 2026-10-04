@@ -157,7 +157,11 @@ def redact(value):
 
 def log(msg):
     line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {redact(msg)}"
-    print(line)
+    # flush=True is essential, not cosmetic. On a runner stdout is a pipe, so
+    # Python block-buffers it (~8KB) and a run that is genuinely working looks
+    # completely hung for minutes at a time with no output at all. Uploading a
+    # multi-GB file can take longer than that between log lines.
+    print(line, flush=True)
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_PATH, "a") as f:
         f.write(line + "\n")

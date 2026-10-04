@@ -26,6 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350         # stay safely under GitHub's 6-hour (360 min) hard job limit
 
+    env:
+      # Belt and braces with the flush=True in log(). Without this, Python
+      # block-buffers stdout because a runner's stdout is a pipe, and a run
+      # that is genuinely working shows NO output for tens of minutes - it looks
+      # hung. This covers output from subprocesses too, which flush=True in the
+      # script cannot reach.
+      PYTHONUNBUFFERED: "1"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4

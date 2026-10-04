@@ -36,6 +36,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
 
+    env:
+      # A runner's stdout is a pipe, so Python block-buffers it and a working
+      # run shows no output for tens of minutes. See the same note in
+      # mega-to-youtube-workflow.yml.
+      PYTHONUNBUFFERED: "1"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4

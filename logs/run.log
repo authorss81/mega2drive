@@ -3107,3 +3107,14 @@
 [2026-10-04 20:32:49] Token for YT cannot be refreshed (AttributeError) - expired or revoked.
 [2026-10-04 20:32:49] Re-authorizing now...
 [2026-10-04 20:32:49] ERROR: missing client secret file C:\Users\USER\AppData\Local\Temp\tmpkei1d2z6\client_secret.json for YT
+[2026-10-04 20:34:14] Token file for YouTube channel 'channel1' is unreadable (JSONDecodeError) - treating it as missing. It will be rewritten by the authorization step.
+[2026-10-04 20:34:14] --- Authorize YouTube channel 'channel1' (browser will open) ---
+[2026-10-04 20:34:38] Token file for YouTube channel 'channel1' is unreadable (JSONDecodeError) - treating it as missing. It will be rewritten by the authorization step.
+[2026-10-04 20:34:38] --- Authorize YouTube channel 'channel1' (browser will open) ---
+[2026-10-04 20:34:52] Saved token_channel1.json
+[2026-10-04 20:34:52] Channel 'channel1' authorized (or already had a valid token).
+[2026-10-04 20:34:52] Token for Google Drive cannot be refreshed (RefreshError) - expired or revoked.
+[2026-10-04 20:34:52] Re-authorizing now...
+[2026-10-04 20:34:52] --- Authorize Google Drive (browser will open) ---
+[2026-10-04 20:35:03] Saved token_drive.json
+[2026-10-04 20:35:03] Google Drive authorized (or already had a valid token).
