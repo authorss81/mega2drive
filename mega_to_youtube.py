@@ -448,10 +448,20 @@ def get_youtube_client(channel_cfg, authorize_only=False):
                 # re-authorised. Uncaught, this aborted the whole run with a
                 # stack trace, and took the Drive destination down with it even
                 # when Drive's own token was perfectly fine.
-                log(f"ERROR: YouTube token for channel '{channel_cfg['name']}' cannot be "
-                    f"refreshed ({type(e).__name__}) - expired or revoked. Fix with: "
-                    f"python mega_to_youtube.py --authorize-only")
-                return None
+                log(f"YouTube token for channel '{channel_cfg['name']}' cannot be "
+                    f"refreshed ({type(e).__name__}) - expired or revoked.")
+                if not authorize_only:
+                    # A scheduled run has no browser and no human, so the
+                    # interactive flow would only fail again. Report and let the
+                    # rest of the run proceed with any healthy destination.
+                    log("Fix with: python mega_to_youtube.py --authorize-only")
+                    return None
+                # --authorize-only means a human IS here, so fall through and
+                # actually re-authorize. Returning early made it a silent
+                # no-op that still printed "authorized", which is how a revoked
+                # token went unnoticed for two runs.
+                log("Re-authorizing now...")
+                creds = None
         else:
             if not secret_path.exists():
                 log(f"ERROR: missing client secret file {secret_path} for channel {channel_cfg['name']}")
@@ -484,10 +494,20 @@ def get_drive_client(drive_cfg, authorize_only=False):
             try:
                 creds.refresh(Request())
             except Exception as e:
-                log(f"ERROR: Google Drive token cannot be refreshed ({type(e).__name__}) - "
-                    f"expired or revoked. Fix with: "
-                    f"python mega_to_youtube.py --authorize-only")
-                return None
+                log(f"Google Drive token cannot be refreshed ({type(e).__name__}) - "
+                    f"expired or revoked.")
+                if not authorize_only:
+                    # A scheduled run has no browser and no human, so trying
+                    # the interactive flow would just fail again. Report and
+                    # let the rest of the run proceed with other destinations.
+                    log("Fix with: python mega_to_youtube.py --authorize-only")
+                    return None
+                # --authorize-only means a human IS here: fall through and
+                # actually re-authorize. Returning early here made
+                # --authorize-only a silent no-op that still printed
+                # "authorized", which is how a revoked token went unnoticed.
+                log("Re-authorizing now...")
+                creds = None
         else:
             if not secret_path.exists():
                 log(f"ERROR: missing client secret file {secret_path} for Google Drive")
