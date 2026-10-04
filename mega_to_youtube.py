@@ -431,95 +431,86 @@ def run_oauth_flow(flow, label):
     return flow.credentials
 
 
-def get_youtube_client(channel_cfg, authorize_only=False):
+def _load_or_authorize(token_path, secret_path, scopes, label, authorize_only):
+    """Return usable credentials, refreshing or re-authorising as needed.
+
+    Returns None when a token cannot be obtained. Two distinct callers' needs
+    are handled here rather than at each call site:
+      * a scheduled run cannot open a browser, so a revoked token is reported
+        and abandoned, leaving any other healthy destination working
+      * --authorize-only has a human present, so a revoked token triggers the
+        interactive flow instead of silently doing nothing
+    """
     creds = None
-    token_path = _resolve(channel_cfg["token_file"])
-    secret_path = _resolve(channel_cfg["client_secret_file"])
-
     if token_path.exists():
-        creds = Credentials.from_authorized_user_file(str(token_path), SCOPES)
+        creds = Credentials.from_authorized_user_file(str(token_path), scopes)
 
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-            except Exception as e:
-                # An expired refresh token cannot be renewed - it must be
-                # re-authorised. Uncaught, this aborted the whole run with a
-                # stack trace, and took the Drive destination down with it even
-                # when Drive's own token was perfectly fine.
-                log(f"YouTube token for channel '{channel_cfg['name']}' cannot be "
-                    f"refreshed ({type(e).__name__}) - expired or revoked.")
-                if not authorize_only:
-                    # A scheduled run has no browser and no human, so the
-                    # interactive flow would only fail again. Report and let the
-                    # rest of the run proceed with any healthy destination.
-                    log("Fix with: python mega_to_youtube.py --authorize-only")
-                    return None
-                # --authorize-only means a human IS here, so fall through and
-                # actually re-authorize. Returning early made it a silent
-                # no-op that still printed "authorized", which is how a revoked
-                # token went unnoticed for two runs.
-                log("Re-authorizing now...")
-                creds = None
-        else:
-            if not secret_path.exists():
-                log(f"ERROR: missing client secret file {secret_path} for channel {channel_cfg['name']}")
+    if creds and creds.valid:
+        return creds
+
+    if creds and creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+            return creds
+        except Exception as e:
+            # An expired refresh token cannot be renewed, only re-authorised.
+            # Uncaught this aborted the whole run with a stack trace and took
+            # the Drive destination down with it even when Drive's own token
+            # was fine.
+            log(f"Token for {label} cannot be refreshed ({type(e).__name__}) - "
+                f"expired or revoked.")
+            if not authorize_only:
+                log("Fix with: python mega_to_youtube.py --authorize-only")
                 return None
-            flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), SCOPES)
-            log(f"--- Authorize channel '{channel_cfg['name']}' (browser will open) ---")
-            creds = run_oauth_flow(flow, f"channel {channel_cfg['name']}")
-        token_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(token_path, "w") as f:
-            f.write(creds.to_json())
+            log("Re-authorizing now...")
+            creds = None
+    if creds and creds.valid:
+        return creds
 
-    if authorize_only:
+    # Either there was no token at all, or the refresh failed and a human is
+    # here to redo the consent flow.
+    if not secret_path.exists():
+        log(f"ERROR: missing client secret file {secret_path} for {label}")
+        return None
+    log(f"--- Authorize {label} (browser will open) ---")
+    flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), scopes)
+    creds = run_oauth_flow(flow, label)
+    if creds is None:
+        log(f"ERROR: authorization did not return credentials for {label}")
+        return None
+
+    token_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(token_path, "w") as f:
+        f.write(creds.to_json())
+    log(f"Saved {token_path.name}")
+    return creds
+
+
+def get_youtube_client(channel_cfg, authorize_only=False):
+    creds = _load_or_authorize(
+        _resolve(channel_cfg["token_file"]),
+        _resolve(channel_cfg["client_secret_file"]),
+        SCOPES,
+        f"YouTube channel '{channel_cfg.get('name')}'",
+        authorize_only,
+    )
+    if authorize_only or creds is None:
         return None
     return build("youtube", "v3", credentials=creds)
 
 
 def get_drive_client(drive_cfg, authorize_only=False):
-    """Same OAuth pattern as get_youtube_client, but for a Google Drive
+    """Same OAuth handling as get_youtube_client, but for a Google Drive
     account (usually your separate 5TB storage account, not a YouTube
     channel). Only called if config.yaml has a `google_drive:` section."""
-    creds = None
-    token_path = _resolve(drive_cfg["token_file"])
-    secret_path = _resolve(drive_cfg["client_secret_file"])
-
-    if token_path.exists():
-        creds = Credentials.from_authorized_user_file(str(token_path), DRIVE_SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            try:
-                creds.refresh(Request())
-            except Exception as e:
-                log(f"Google Drive token cannot be refreshed ({type(e).__name__}) - "
-                    f"expired or revoked.")
-                if not authorize_only:
-                    # A scheduled run has no browser and no human, so trying
-                    # the interactive flow would just fail again. Report and
-                    # let the rest of the run proceed with other destinations.
-                    log("Fix with: python mega_to_youtube.py --authorize-only")
-                    return None
-                # --authorize-only means a human IS here: fall through and
-                # actually re-authorize. Returning early here made
-                # --authorize-only a silent no-op that still printed
-                # "authorized", which is how a revoked token went unnoticed.
-                log("Re-authorizing now...")
-                creds = None
-        else:
-            if not secret_path.exists():
-                log(f"ERROR: missing client secret file {secret_path} for Google Drive")
-                return None
-            flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), DRIVE_SCOPES)
-            log("--- Authorize Google Drive (browser will open) ---")
-            creds = run_oauth_flow(flow, "Google Drive")
-        token_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(token_path, "w") as f:
-            f.write(creds.to_json())
-
-    if authorize_only:
+    creds = _load_or_authorize(
+        _resolve(drive_cfg["token_file"]),
+        _resolve(drive_cfg["client_secret_file"]),
+        DRIVE_SCOPES,
+        "Google Drive",
+        authorize_only,
+    )
+    if authorize_only or creds is None:
         return None
     return build("drive", "v3", credentials=creds)
 
