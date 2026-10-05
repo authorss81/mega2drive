@@ -1,15 +1,18 @@
 name: mega2yt
 
 on:
-  workflow_dispatch: {}          # lets you click "Run workflow" manually in the Actions tab
-  schedule:
-    # Every 6 hours, matching the job's own timeout. Combined with the
-    # concurrency group below, a run is always queued and ready to start the
-    # moment the previous one finishes - so a large backlog drains continuously
-    # instead of sitting idle until tomorrow. GitHub queues overlapping runs
-    # rather than starting them in parallel, and the manifest makes each one
-    # resume where the last left off.
-    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "list-only (inventory only, no transfers) or run-all"
+        required: false
+        default: "run-all"
+  # SCHEDULE TEMPORARILY DISABLED 2026-10-05 - the manifest is incomplete and
+  # each run re-uploads unrecorded files, creating YouTube duplicates. Do NOT
+  # re-enable until the full inventory + reconciliation is committed.
+  # schedule:
+  #   Every 6 hours (see the note that was here about continuous draining).
+  #   - cron: "0 */6 * * *"
 
 permissions:
   contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo
@@ -92,7 +95,12 @@ jobs:
         run: python run_report.py snapshot --manifest manifest.csv
 
       - name: Run the pipeline
-        run: python mega_to_youtube.py --run-all
+        run: |
+          if [ "${{ github.event.inputs.mode || 'run-all' }}" = "list-only" ]; then
+            python mega_to_youtube.py --list-only
+          else
+            python mega_to_youtube.py --run-all
+          fi
 
       - name: Record what this run accomplished
         if: always()
