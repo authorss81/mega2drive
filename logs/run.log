@@ -3118,3 +3118,31 @@
 [2026-10-04 20:34:52] --- Authorize Google Drive (browser will open) ---
 [2026-10-04 20:35:03] Saved token_drive.json
 [2026-10-04 20:35:03] Google Drive authorized (or already had a valid token).
+[2026-10-05 11:14:03] Listing videos in MEGA account: mega_account_1
+[2026-10-05 11:14:05]   -> 15 video(s) found
+[2026-10-05 11:14:05] Listing videos in MEGA account: mega_account_2
+[2026-10-05 11:14:07]   -> 16 video(s) found
+[2026-10-05 11:14:07] Listing videos in MEGA account: mega_account_3
+[2026-10-05 11:14:09]   -> 12 video(s) found
+[2026-10-05 11:14:09] Listing videos in MEGA account: mega_account_5
+[2026-10-05 11:14:11]   -> 12 video(s) found
+[2026-10-05 11:14:11] Listing videos in MEGA account: mega_account_6
+[2026-10-05 11:14:13]   -> 14 video(s) found
+[2026-10-05 11:14:13] Listing videos in MEGA account: mega_account_7
+[2026-10-05 11:14:15]   -> 12 video(s) found
+[2026-10-05 11:14:15] Listing videos in MEGA account: mega_account_8
+[2026-10-05 11:14:18]   -> 11 video(s) found
+[2026-10-05 11:14:18] Listing videos in MEGA account: mega_account_9
+[2026-10-05 11:14:20]   -> 58 video(s) found
+[2026-10-05 11:14:20] Listing videos in MEGA account: mega_account_10
+[2026-10-05 11:14:23]   -> 20 video(s) found
+[2026-10-05 11:14:23] Listing videos in MEGA account: mega_account_11
+[2026-10-05 11:14:25]   -> 12 video(s) found
+[2026-10-05 11:14:25] Listing videos in MEGA account: mega_account_12
+[2026-10-05 11:14:27]   -> 48 video(s) found
+[2026-10-05 11:14:27] Listing videos in MEGA account: mega_account_13
+[2026-10-05 11:14:29]   -> 11 video(s) found
+[2026-10-05 11:14:29] Listing videos in MEGA account: mega_account_73
+[2026-10-05 11:14:32]   -> 19 video(s) found
+[2026-10-05 11:14:32] Listing videos in MEGA account: mega_account_14
+[2026-10-05 11:14:34]   -> 8 video(s) found
