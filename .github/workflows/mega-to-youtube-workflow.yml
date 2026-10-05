@@ -7,12 +7,12 @@ on:
         description: "list-only (inventory only, no transfers) or run-all"
         required: false
         default: "run-all"
-  # SCHEDULE TEMPORARILY DISABLED 2026-10-05 - the manifest is incomplete and
-  # each run re-uploads unrecorded files, creating YouTube duplicates. Do NOT
-  # re-enable until the full inventory + reconciliation is committed.
-  # schedule:
-  #   Every 6 hours (see the note that was here about continuous draining).
-  #   - cron: "0 */6 * * *"
+  # RE-ENABLED 2026-10-05 after the full inventory + reconciliation.
+  # The manifest now covers every file the inventory found (268 rows), and
+  # every channel video that could be unambiguously matched is recorded, so
+  # the "unknown file = new work" loop that created the duplicates is closed.
+  schedule:
+    - cron: "0 */6 * * *"
 
 permissions:
   contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo
