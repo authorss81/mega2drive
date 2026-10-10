@@ -776,6 +776,18 @@ def run(config, single_file_test=False, retry_failed_only=False):
     youtube_blocked = False
     files_since_probe = 0
     skipped_no_work = 0
+    # Cap the work per run so the job always finishes inside its timeout and
+    # reaches the commit step. A run that tries to do everything takes 6+
+    # hours, gets killed by the 350-minute limit, and loses all its progress -
+    # which the next run then repeats from scratch. With a cap, each run does
+    # a bounded batch, commits it, and the next scheduled run continues where
+    # it left off. 0 (or absent) means no cap.
+    behavior_opts = config.get("behavior") or {}
+    try:
+        max_files = int(behavior_opts.get("max_files_per_run", 20) or 0)
+    except (TypeError, ValueError):
+        max_files = 20
+    processed_this_run = 0
     drive_cfg = config.get("google_drive")
     if drive_cfg and drive_cfg.get("enabled", False):
         drive_client = get_drive_client(drive_cfg)
@@ -807,6 +819,13 @@ def run(config, single_file_test=False, retry_failed_only=False):
     known_unavailable_aliases = set()  # accounts that failed login once this run — don't retry per-file
 
     for item in worklist:
+        # Stop cleanly at the batch cap, if set. This is what guarantees the
+        # job finishes inside its timeout and reaches the commit step, instead
+        # of dying at 350 minutes and losing everything it did.
+        if max_files and processed_this_run >= max_files:
+            log(f"Batch cap reached ({processed_this_run} file(s) this run) — stopping cleanly. "
+                f"The next scheduled run continues from the manifest.")
+            break
         alias = item["mega_account"]
         real_email = item.get("_mega_email") or alias_to_email.get(alias)
         remote_path = item["mega_remote_path"]
@@ -891,6 +910,9 @@ def run(config, single_file_test=False, retry_failed_only=False):
             current_session_alias = alias
 
         log(f"Downloading {remote_path} from {alias} ...")
+        # Counted here - after every skip - so the batch cap measures real work,
+        # not files glanced at and passed over.
+        processed_this_run += 1
         try:
             local_file, dl_attempts = download_with_retry(remote_path, staging_dir)
         except Exception as e:

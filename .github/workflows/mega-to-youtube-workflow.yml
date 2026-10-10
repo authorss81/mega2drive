@@ -7,12 +7,12 @@ on:
         description: "list-only (inventory only, no transfers) or run-all"
         required: false
         default: "run-all"
-  # RE-ENABLED 2026-10-05 after the full inventory + reconciliation.
-  # The manifest now covers every file the inventory found (268 rows), and
-  # every channel video that could be unambiguously matched is recorded, so
-  # the "unknown file = new work" loop that created the duplicates is closed.
-  schedule:
-    - cron: "0 */6 * * *"
+  # DISABLED 2026-10-10 - runs were being cancelled before committing, so each
+  # run re-uploaded the same 8 files without ever recording them (3 copies each
+  # in 2 days). Do NOT re-enable until the manifest is reconciled AND runs are
+  # allowed to finish. See commit history for the full post-mortem.
+  # schedule:
+  #   - cron: "0 */6 * * *"
 
 permissions:
   contents: write                # needed so the job can commit manifest.csv/inventory.csv back to the repo

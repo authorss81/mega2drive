@@ -111,6 +111,12 @@ behavior:
   manifest_file: "manifest.csv"     # THE trackable table: mega account, path, size, date,
                                      # youtube channel, video id, status — one row per video.
                                      # Open this directly in Excel/Sheets any time to see progress.
+  # Maximum files to process per run. A run that tries to do everything takes
+  # 6+ hours, gets killed by the 350-minute limit before its commit step, and
+  # loses all progress - which the next run repeats from scratch. With a cap,
+  # each run does a bounded batch, commits it, and the next one continues.
+  # 20 files at ~10 min each fits comfortably. 0 (or absent) means no cap.
+  max_files_per_run: 20
   sort_by_mega_date: false          # true = upload oldest MEGA files first (best-effort; falls back
                                      # to alphabetical if your mega-cmd version doesn't report dates
                                      # in a parseable format — check with `--list-only` first)
