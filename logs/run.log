@@ -3146,3 +3146,4 @@
 [2026-10-05 11:14:32]   -> 19 video(s) found
 [2026-10-05 11:14:32] Listing videos in MEGA account: mega_account_14
 [2026-10-05 11:14:34]   -> 8 video(s) found
+[2026-10-10 20:03:32] ERROR: missing client secret file C:\Users\USER\Desktop\mega2drive\credentials\client_secret_channel1.json for YouTube channel 'channel1'
