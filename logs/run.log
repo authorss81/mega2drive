@@ -3159,3 +3159,53 @@
 [2026-10-12 03:27:53] Token for YouTube channel 'channel1' cannot be refreshed (RefreshError) - expired or revoked.
 [2026-10-12 03:27:53] Fix with: python mega_to_youtube.py --authorize-only
 [2026-10-12 03:27:53] No valid YouTube clients available. Run --authorize-only first.
+[2026-10-12 08:22:38] Listing videos in MEGA account: mega_account_1
+[2026-10-12 08:22:40]   -> 15 video(s) found
+[2026-10-12 08:22:40] Listing videos in MEGA account: mega_account_2
+[2026-10-12 08:22:42]   -> 16 video(s) found
+[2026-10-12 08:22:42] Listing videos in MEGA account: mega_account_3
+[2026-10-12 08:22:45]   -> 12 video(s) found
+[2026-10-12 08:22:45] Listing videos in MEGA account: mega_account_5
+[2026-10-12 08:22:47]   -> 12 video(s) found
+[2026-10-12 08:22:47] Listing videos in MEGA account: mega_account_6
+[2026-10-12 08:22:49]   -> 14 video(s) found
+[2026-10-12 08:22:49] Listing videos in MEGA account: mega_account_7
+[2026-10-12 08:22:50]   -> 12 video(s) found
+[2026-10-12 08:22:50] Listing videos in MEGA account: mega_account_8
+[2026-10-12 08:22:52]   -> 11 video(s) found
+[2026-10-12 08:22:52] Listing videos in MEGA account: mega_account_9
+[2026-10-12 08:22:54]   -> 58 video(s) found
+[2026-10-12 08:22:54] Listing videos in MEGA account: mega_account_10
+[2026-10-12 08:22:56]   -> 20 video(s) found
+[2026-10-12 08:22:56] Listing videos in MEGA account: mega_account_11
+[2026-10-12 08:22:58]   -> 12 video(s) found
+[2026-10-12 08:22:58] Listing videos in MEGA account: mega_account_12
+[2026-10-12 08:23:00]   -> 48 video(s) found
+[2026-10-12 08:23:00] Listing videos in MEGA account: mega_account_13
+[2026-10-12 08:23:02]   -> 11 video(s) found
+[2026-10-12 08:23:02] Listing videos in MEGA account: mega_account_73
+[2026-10-12 08:23:04]   -> 19 video(s) found
+[2026-10-12 08:23:04] Listing videos in MEGA account: mega_account_14
+[2026-10-12 08:23:06]   -> 16 video(s) found
+[2026-10-12 08:23:06] Listing videos in MEGA account: mega_account_15
+[2026-10-12 08:23:08]   -> 15 video(s) found
+[2026-10-12 08:23:08] Listing videos in MEGA account: mega_account_16
+[2026-10-12 08:23:10]   -> 4 video(s) found
+[2026-10-12 08:23:10] Switching MEGA session to mega_account_13 ...
+[2026-10-12 08:23:12] Downloading /2026-09-26 14-18-57.mkv from mega_account_13 ...
+[2026-10-12 08:23:38] Uploading 2026-09-26 14-18-57.mkv to channel 'channel1' ...
+[2026-10-12 08:23:56] SUCCESS: 2026-09-26 14-18-57.mkv -> https://youtu.be/kkMOQ2O8_8E (channel: channel1)
+[2026-10-12 08:23:56] Downloading /2026-09-26 16-39-07.mkv from mega_account_13 ...
+[2026-10-12 08:24:21] Uploading 2026-09-26 16-39-07.mkv to channel 'channel1' ...
+[2026-10-12 08:24:36] SUCCESS: 2026-09-26 16-39-07.mkv -> https://youtu.be/8n52Hn8kFfU (channel: channel1)
+[2026-10-12 08:24:36] Downloading /2026-09-26 18-43-10.mkv from mega_account_13 ...
+[2026-10-12 08:24:45] Uploading 2026-09-26 18-43-10.mkv to channel 'channel1' ...
+[2026-10-12 08:25:02] SUCCESS: 2026-09-26 18-43-10.mkv -> https://youtu.be/UulPXj0E8aI (channel: channel1)
+[2026-10-12 08:25:02] Downloading /2026-09-27 14-41-15.mkv from mega_account_13 ...
+[2026-10-12 08:25:34] Uploading 2026-09-27 14-41-15.mkv to channel 'channel1' ...
+[2026-10-12 08:25:48] SUCCESS: 2026-09-27 14-41-15.mkv -> https://youtu.be/BamzvqFk15g (channel: channel1)
+[2026-10-12 08:25:48] Downloading /2026-09-27 17-44-50.mkv from mega_account_13 ...
+[2026-10-12 08:25:54] Uploading 2026-09-27 17-44-50.mkv to channel 'channel1' ...
+[2026-10-12 08:26:06] SUCCESS: 2026-09-27 17-44-50.mkv -> https://youtu.be/nW0n7X9HeSQ (channel: channel1)
+[2026-10-12 08:26:06] Batch cap reached (5 file(s) this run) — stopping cleanly. The next scheduled run continues from the manifest.
+[2026-10-12 08:26:06] Run complete.
