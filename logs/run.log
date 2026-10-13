@@ -3261,3 +3261,53 @@
 [2026-10-12 14:02:11] SUCCESS: 2026-10-03 18-49-20.mkv -> Drive file id 13M3jDwpmiGn_AKmLX4iAJ2WzgZOXVKLg
 [2026-10-12 14:02:12] Batch cap reached (5 file(s) this run) — stopping cleanly. The next scheduled run continues from the manifest.
 [2026-10-12 14:02:12] Run complete.
+[2026-10-12 23:59:08] Listing videos in MEGA account: mega_account_1
+[2026-10-12 23:59:11]   -> 15 video(s) found
+[2026-10-12 23:59:11] Listing videos in MEGA account: mega_account_2
+[2026-10-12 23:59:13]   -> 16 video(s) found
+[2026-10-12 23:59:13] Listing videos in MEGA account: mega_account_3
+[2026-10-12 23:59:15]   -> 12 video(s) found
+[2026-10-12 23:59:15] Listing videos in MEGA account: mega_account_5
+[2026-10-12 23:59:17]   -> 12 video(s) found
+[2026-10-12 23:59:17] Listing videos in MEGA account: mega_account_6
+[2026-10-12 23:59:18]   -> 14 video(s) found
+[2026-10-12 23:59:18] Listing videos in MEGA account: mega_account_7
+[2026-10-12 23:59:21]   -> 12 video(s) found
+[2026-10-12 23:59:21] Listing videos in MEGA account: mega_account_8
+[2026-10-12 23:59:23]   -> 11 video(s) found
+[2026-10-12 23:59:23] Listing videos in MEGA account: mega_account_9
+[2026-10-12 23:59:25]   -> 58 video(s) found
+[2026-10-12 23:59:25] Listing videos in MEGA account: mega_account_10
+[2026-10-12 23:59:27]   -> 20 video(s) found
+[2026-10-12 23:59:27] Listing videos in MEGA account: mega_account_11
+[2026-10-12 23:59:29]   -> 12 video(s) found
+[2026-10-12 23:59:29] Listing videos in MEGA account: mega_account_12
+[2026-10-12 23:59:31]   -> 48 video(s) found
+[2026-10-12 23:59:31] Listing videos in MEGA account: mega_account_13
+[2026-10-12 23:59:33]   -> 11 video(s) found
+[2026-10-12 23:59:33] Listing videos in MEGA account: mega_account_73
+[2026-10-12 23:59:36]   -> 19 video(s) found
+[2026-10-12 23:59:36] Listing videos in MEGA account: mega_account_14
+[2026-10-12 23:59:38]   -> 16 video(s) found
+[2026-10-12 23:59:38] Listing videos in MEGA account: mega_account_15
+[2026-10-12 23:59:40]   -> 15 video(s) found
+[2026-10-12 23:59:40] Listing videos in MEGA account: mega_account_16
+[2026-10-12 23:59:42]   -> 16 video(s) found
+[2026-10-12 23:59:42] Switching MEGA session to mega_account_73 ...
+[2026-10-12 23:59:44] Downloading /2026-08-22 16-39-06.mkv from mega_account_73 ...
+[2026-10-13 00:00:18] Uploading 2026-08-22 16-39-06.mkv to channel 'channel1' ...
+[2026-10-13 00:00:50] SUCCESS: 2026-08-22 16-39-06.mkv -> https://youtu.be/2vj0naMNcfw (channel: channel1)
+[2026-10-13 00:00:50] Downloading /2026-08-22 18-50-51.mkv from mega_account_73 ...
+[2026-10-13 00:01:19] Uploading 2026-08-22 18-50-51.mkv to channel 'channel1' ...
+[2026-10-13 00:01:46] SUCCESS: 2026-08-22 18-50-51.mkv -> https://youtu.be/gceIeK_rs7M (channel: channel1)
+[2026-10-13 00:01:46] Downloading /2026-08-27 18-03-41.mkv from mega_account_73 ...
+[2026-10-13 00:02:23] Uploading 2026-08-27 18-03-41.mkv to channel 'channel1' ...
+[2026-10-13 00:02:37] SUCCESS: 2026-08-27 18-03-41.mkv -> https://youtu.be/c3pfGkXB_SQ (channel: channel1)
+[2026-10-13 00:02:38] Downloading /2026-08-27 18-51-06.mkv from mega_account_73 ...
+[2026-10-13 00:03:27] Uploading 2026-08-27 18-51-06.mkv to channel 'channel1' ...
+[2026-10-13 00:03:53] SUCCESS: 2026-08-27 18-51-06.mkv -> https://youtu.be/m8mwQgSmE_s (channel: channel1)
+[2026-10-13 00:03:54] Downloading /2026-08-29 16-45-45.mkv from mega_account_73 ...
+[2026-10-13 00:03:54] Uploading 2026-08-29 16-45-45.mkv to channel 'channel1' ...
+[2026-10-13 00:03:55] SUCCESS: 2026-08-29 16-45-45.mkv -> https://youtu.be/bRnLnTIVsTg (channel: channel1)
+[2026-10-13 00:03:55] Batch cap reached (5 file(s) this run) — stopping cleanly. The next scheduled run continues from the manifest.
+[2026-10-13 00:03:55] Run complete.
