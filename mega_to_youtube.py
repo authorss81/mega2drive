@@ -299,13 +299,29 @@ def upsert_manifest_row(rows, **fields):
 # MEGA side (via mega-cmd's `mega-*` CLI tools)
 # ---------------------------------------------------------------------------
 
+# Every mega-cmd call carries a timeout. Without one, a stalled transfer waits
+# forever: on 2026-10-13 a single mega-get hung for 5h43m, the job died at the
+# 350-minute limit having done nothing since, and the next run repeated the
+# same file. A timeout turns "hung forever" into "fails fast, retries, moves
+# on". Values are generous - a healthy 2GB download finishes in minutes - so
+# only a genuinely stuck transfer ever hits them.
+MEGA_LOGIN_TIMEOUT = 120     # login is a quick handshake
+MEGA_LIST_TIMEOUT = 300      # listing can be slow on large accounts
+MEGA_GET_TIMEOUT = 1800      # 30 min per attempt; ~1MB/s floor on a 2GB file
+
+
 def mega_login(email, password, alias=None):
     try:
-        subprocess.run(["mega-logout"], capture_output=True)
-        result = subprocess.run(["mega-login", email, password], capture_output=True, text=True)
+        subprocess.run(["mega-logout"], capture_output=True, timeout=MEGA_LOGIN_TIMEOUT)
+        result = subprocess.run(["mega-login", email, password],
+                                capture_output=True, text=True, timeout=MEGA_LOGIN_TIMEOUT)
     except FileNotFoundError:
         log(f"FATAL: mega-cmd is not installed or not on PATH — cannot log into {alias or '[account]'} "
             f"or any other MEGA account. Check the 'Install mega-cmd' step in the workflow/server setup.")
+        return False
+    except subprocess.TimeoutExpired:
+        log(f"MEGA login TIMED OUT for {alias or '[account]'} after {MEGA_LOGIN_TIMEOUT}s — "
+            f"treating as unavailable this run.")
         return False
     if result.returncode != 0:
         log(f"MEGA login FAILED for {alias or '[account]'} — account may not exist, be suspended, "
@@ -324,7 +340,12 @@ def mega_list_videos_with_details(remote_path="/", allowed_extensions=None):
     means date-ordering isn't available on this mega-cmd build).
     """
     exts = allowed_extensions or VIDEO_EXTENSIONS
-    result = subprocess.run(["mega-find", remote_path, "--pattern=*"], capture_output=True, text=True)
+    try:
+        result = subprocess.run(["mega-find", remote_path, "--pattern=*"],
+                                capture_output=True, text=True, timeout=MEGA_LIST_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        log(f"mega-find timed out after {MEGA_LIST_TIMEOUT}s — treating as empty this run.")
+        return []
     if result.returncode != 0:
         log(f"mega-find failed: {redact(result.stderr.strip())}")
         return []
@@ -336,7 +357,12 @@ def mega_list_videos_with_details(remote_path="/", allowed_extensions=None):
     date_pattern = re.compile(r"(\d{2}\w{3}\d{4}\s+\d{2}:\d{2}:\d{2})")  # e.g. 01Feb2024 10:23:44
     for p in paths:
         size_bytes, modified = None, None
-        ls = subprocess.run(["mega-ls", "-l", p], capture_output=True, text=True)
+        try:
+            ls = subprocess.run(["mega-ls", "-l", p], capture_output=True, text=True,
+                                timeout=MEGA_LIST_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            details.append({"remote_path": p, "size_bytes": None, "modified": None})
+            continue
         if ls.returncode == 0 and ls.stdout.strip():
             line = ls.stdout.strip().splitlines()[-1]
             parts = line.split()
@@ -356,7 +382,11 @@ def mega_list_videos_with_details(remote_path="/", allowed_extensions=None):
 
 def mega_download(remote_path, local_dir):
     local_dir.mkdir(parents=True, exist_ok=True)
-    result = subprocess.run(["mega-get", remote_path, str(local_dir)], capture_output=True, text=True)
+    try:
+        result = subprocess.run(["mega-get", remote_path, str(local_dir)],
+                                capture_output=True, text=True, timeout=MEGA_GET_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"mega-get timed out after {MEGA_GET_TIMEOUT}s (stalled transfer)")
     if result.returncode != 0:
         raise RuntimeError(f"mega-get failed: {redact(result.stderr.strip())}")
     local_file = local_dir / Path(remote_path).name

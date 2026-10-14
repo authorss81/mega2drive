@@ -428,12 +428,24 @@ def make_isolated_env():
     return env
 
 
+# Same timeout discipline as mega_to_youtube.py: a stalled mega-cmd call must
+# fail fast rather than hang the job until GitHub's 350-minute limit kills it.
+MEGA_LOGIN_TIMEOUT = 120
+MEGA_PUT_TIMEOUT = 1800
+
+
 def mega_login(email, password, env, alias=None):
     try:
-        subprocess.run(["mega-logout"], capture_output=True, env=env)
-        result = subprocess.run(["mega-login", email, password], capture_output=True, text=True, env=env)
+        subprocess.run(["mega-logout"], capture_output=True, env=env,
+                       timeout=MEGA_LOGIN_TIMEOUT)
+        result = subprocess.run(["mega-login", email, password],
+                                capture_output=True, text=True, env=env,
+                                timeout=MEGA_LOGIN_TIMEOUT)
     except FileNotFoundError:
         log(f"FATAL: mega-cmd is not installed or not on PATH — cannot log into {alias or '[account]'}.")
+        return False
+    except subprocess.TimeoutExpired:
+        log(f"MEGA login TIMED OUT for {alias or '[account]'} after {MEGA_LOGIN_TIMEOUT}s.")
         return False
     if result.returncode != 0:
         log(f"MEGA login FAILED for {alias or '[account]'} — account may not exist, be suspended, "
@@ -443,7 +455,12 @@ def mega_login(email, password, env, alias=None):
 
 
 def mega_upload_once(local_path, remote_dir, env):
-    result = subprocess.run(["mega-put", str(local_path), remote_dir], capture_output=True, text=True, env=env)
+    try:
+        result = subprocess.run(["mega-put", str(local_path), remote_dir],
+                                capture_output=True, text=True, env=env,
+                                timeout=MEGA_PUT_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"mega-put timed out after {MEGA_PUT_TIMEOUT}s (stalled transfer)")
     if result.returncode != 0:
         stderr = redact(result.stderr.strip())
         if any(w in stderr.lower() for w in ("quota", "storage", "over quota")):
