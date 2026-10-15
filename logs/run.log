@@ -3794,3 +3794,478 @@
 [2026-10-15 10:10:37] SUCCESS: 2026-04-23 18-01-57.mkv -> Drive file id 1nbn9BIhXiWYpOLZxd7XBH-3Y4C_NKm7i
 [2026-10-15 10:10:37] Batch cap reached (30 file(s) this run) — stopping cleanly. The next scheduled run continues from the manifest.
 [2026-10-15 10:10:37] Run complete.
+[2026-10-15 10:36:46] Listing videos in MEGA account: mega_account_1
+[2026-10-15 10:36:48]   -> 15 video(s) found
+[2026-10-15 10:36:48] Listing videos in MEGA account: mega_account_2
+[2026-10-15 10:36:50]   -> 16 video(s) found
+[2026-10-15 10:36:50] Listing videos in MEGA account: mega_account_3
+[2026-10-15 10:36:52]   -> 12 video(s) found
+[2026-10-15 10:36:52] Listing videos in MEGA account: mega_account_5
+[2026-10-15 10:36:54]   -> 12 video(s) found
+[2026-10-15 10:36:54] Listing videos in MEGA account: mega_account_6
+[2026-10-15 10:36:55]   -> 14 video(s) found
+[2026-10-15 10:36:55] Listing videos in MEGA account: mega_account_7
+[2026-10-15 10:36:57]   -> 12 video(s) found
+[2026-10-15 10:36:57] Listing videos in MEGA account: mega_account_8
+[2026-10-15 10:36:59]   -> 11 video(s) found
+[2026-10-15 10:36:59] Listing videos in MEGA account: mega_account_9
+[2026-10-15 10:37:02]   -> 58 video(s) found
+[2026-10-15 10:37:02] Listing videos in MEGA account: mega_account_10
+[2026-10-15 10:37:04]   -> 20 video(s) found
+[2026-10-15 10:37:04] Listing videos in MEGA account: mega_account_11
+[2026-10-15 10:37:06]   -> 12 video(s) found
+[2026-10-15 10:37:06] Listing videos in MEGA account: mega_account_12
+[2026-10-15 10:37:08]   -> 48 video(s) found
+[2026-10-15 10:37:08] Listing videos in MEGA account: mega_account_13
+[2026-10-15 10:37:10]   -> 11 video(s) found
+[2026-10-15 10:37:10] Listing videos in MEGA account: mega_account_14
+[2026-10-15 10:37:12]   -> 16 video(s) found
+[2026-10-15 10:37:12] Listing videos in MEGA account: mega_account_15
+[2026-10-15 10:37:14]   -> 15 video(s) found
+[2026-10-15 10:37:14] Listing videos in MEGA account: mega_account_16
+[2026-10-15 10:37:17]   -> 16 video(s) found
+[2026-10-15 10:37:17] Listing videos in MEGA account: mega_account_17
+[2026-10-15 10:37:19]   -> 17 video(s) found
+[2026-10-15 10:37:19] Listing videos in MEGA account: mega_account_73
+[2026-10-15 10:37:21]   -> 19 video(s) found
+[2026-10-15 10:37:21] Switching MEGA session to mega_account_17 ...
+[2026-10-15 10:37:23] Downloading /2026-04-30 18-03-11.mkv from mega_account_17 ...
+[2026-10-15 10:37:29] Uploading 2026-04-30 18-03-11.mkv to channel 'channel1' ...
+[2026-10-15 10:37:39] SUCCESS: 2026-04-30 18-03-11.mkv -> https://youtu.be/d77xk9fECP4 (channel: channel1)
+[2026-10-15 10:37:39] Uploading 2026-04-30 18-03-11.mkv to Google Drive ...
+[2026-10-15 10:37:55] SUCCESS: 2026-04-30 18-03-11.mkv -> Drive file id 1A95JfC3pkW0cslQcj86oYuTdtdx2fMCX
+[2026-10-15 10:37:55] Downloading /2026-05-07 19-01-28.mkv from mega_account_17 ...
+[2026-10-15 10:38:01] Uploading 2026-05-07 19-01-28.mkv to channel 'channel1' ...
+[2026-10-15 10:38:08] SUCCESS: 2026-05-07 19-01-28.mkv -> https://youtu.be/XcXQMLdRfCw (channel: channel1)
+[2026-10-15 10:38:08] Uploading 2026-05-07 19-01-28.mkv to Google Drive ...
+[2026-10-15 10:38:26] SUCCESS: 2026-05-07 19-01-28.mkv -> Drive file id 1vkXMZqBIB8nujHAjzHoLlldhUxSSaIvP
+[2026-10-15 10:38:26] Downloading /2026-05-14 18-05-39.mkv from mega_account_17 ...
+[2026-10-15 10:38:34] Uploading 2026-05-14 18-05-39.mkv to channel 'channel1' ...
+[2026-10-15 10:38:40] SUCCESS: 2026-05-14 18-05-39.mkv -> https://youtu.be/s4E9lWjwdnY (channel: channel1)
+[2026-10-15 10:38:40] Uploading 2026-05-14 18-05-39.mkv to Google Drive ...
+[2026-10-15 10:38:55] SUCCESS: 2026-05-14 18-05-39.mkv -> Drive file id 139yIy1EAer2mGJ-0WrOZ4PhI3ZwHaf-0
+[2026-10-15 10:38:55] Downloading /2026-05-14 19-13-35.mkv from mega_account_17 ...
+[2026-10-15 10:39:01] Uploading 2026-05-14 19-13-35.mkv to channel 'channel1' ...
+[2026-10-15 10:39:09] SUCCESS: 2026-05-14 19-13-35.mkv -> https://youtu.be/CAbYxcfL6wM (channel: channel1)
+[2026-10-15 10:39:09] Uploading 2026-05-14 19-13-35.mkv to Google Drive ...
+[2026-10-15 10:39:23] SUCCESS: 2026-05-14 19-13-35.mkv -> Drive file id 1F4bo21cIfKXmCncR7B1qeR9FtDDh82Jj
+[2026-10-15 10:39:23] Downloading /2026-05-30 16-27-25.mkv from mega_account_17 ...
+[2026-10-15 10:39:28] Uploading 2026-05-30 16-27-25.mkv to channel 'channel1' ...
+[2026-10-15 10:39:37] SUCCESS: 2026-05-30 16-27-25.mkv -> https://youtu.be/_d6Jor2lfF0 (channel: channel1)
+[2026-10-15 10:39:37] Uploading 2026-05-30 16-27-25.mkv to Google Drive ...
+[2026-10-15 10:39:55] SUCCESS: 2026-05-30 16-27-25.mkv -> Drive file id 1Eulx_VkVWPq1ZfgT3GZb8rNr6Mm-whsX
+[2026-10-15 10:39:55] Downloading /2026-06-11 19-06-44(done).mkv from mega_account_17 ...
+[2026-10-15 10:40:02] Uploading 2026-06-11 19-06-44(done).mkv to channel 'channel1' ...
+[2026-10-15 10:40:09] SUCCESS: 2026-06-11 19-06-44(done).mkv -> https://youtu.be/aA3Ix6cYFI0 (channel: channel1)
+[2026-10-15 10:40:09] Uploading 2026-06-11 19-06-44(done).mkv to Google Drive ...
+[2026-10-15 10:40:26] SUCCESS: 2026-06-11 19-06-44(done).mkv -> Drive file id 1dCp8vI1Yy5g7p5juwVZLxKgx-Q-jb6CE
+[2026-10-15 10:40:26] Downloading /2026-06-21 14-14-33.mkv from mega_account_17 ...
+[2026-10-15 10:40:35] Uploading 2026-06-21 14-14-33.mkv to channel 'channel1' ...
+[2026-10-15 10:40:41] SUCCESS: 2026-06-21 14-14-33.mkv -> https://youtu.be/Vy_dUPS-eqg (channel: channel1)
+[2026-10-15 10:40:41] Uploading 2026-06-21 14-14-33.mkv to Google Drive ...
+[2026-10-15 10:41:00] SUCCESS: 2026-06-21 14-14-33.mkv -> Drive file id 1BJigHy99TLe6aQXy5syp6YMqlfpX2kIs
+[2026-10-15 10:41:00] Downloading /2026-06-25 19-00-16.mkv from mega_account_17 ...
+[2026-10-15 10:41:06] Uploading 2026-06-25 19-00-16.mkv to channel 'channel1' ...
+[2026-10-15 10:41:16] SUCCESS: 2026-06-25 19-00-16.mkv -> https://youtu.be/S2oxRhr-7CE (channel: channel1)
+[2026-10-15 10:41:16] Uploading 2026-06-25 19-00-16.mkv to Google Drive ...
+[2026-10-15 10:41:32] SUCCESS: 2026-06-25 19-00-16.mkv -> Drive file id 1GT_AGf0WarsB5rq-RV3AQxu_1vtBDnoT
+[2026-10-15 10:41:32] Downloading /2026-07-02 16-58-38.mkv from mega_account_17 ...
+[2026-10-15 10:41:44] Uploading 2026-07-02 16-58-38.mkv to channel 'channel1' ...
+[2026-10-15 10:41:56] SUCCESS: 2026-07-02 16-58-38.mkv -> https://youtu.be/kxeolYQrOgg (channel: channel1)
+[2026-10-15 10:41:56] Uploading 2026-07-02 16-58-38.mkv to Google Drive ...
+[2026-10-15 10:42:12] SUCCESS: 2026-07-02 16-58-38.mkv -> Drive file id 1XSL56GE8_iZ4r40Q4NmYXlSdFx4C-Mr2
+[2026-10-15 10:42:12] Downloading /2026-07-02 19-08-22.mkv from mega_account_17 ...
+[2026-10-15 10:42:17] Uploading 2026-07-02 19-08-22.mkv to channel 'channel1' ...
+[2026-10-15 10:42:25] SUCCESS: 2026-07-02 19-08-22.mkv -> https://youtu.be/EOfejPrn07I (channel: channel1)
+[2026-10-15 10:42:25] Uploading 2026-07-02 19-08-22.mkv to Google Drive ...
+[2026-10-15 10:42:40] SUCCESS: 2026-07-02 19-08-22.mkv -> Drive file id 1cxdoJXMGQv85rZlM56G46ntokg85UD19
+[2026-10-15 10:42:41] Downloading /2026-07-16 18-01-35.mkv from mega_account_17 ...
+[2026-10-15 10:42:57] Uploading 2026-07-16 18-01-35.mkv to channel 'channel1' ...
+[2026-10-15 10:43:05] SUCCESS: 2026-07-16 18-01-35.mkv -> https://youtu.be/91mNwoabVsM (channel: channel1)
+[2026-10-15 10:43:05] Uploading 2026-07-16 18-01-35.mkv to Google Drive ...
+[2026-10-15 10:43:24] SUCCESS: 2026-07-16 18-01-35.mkv -> Drive file id 1B0-EFu9FR1h4gqLG-rhXkyrHv56FdXo5
+[2026-10-15 10:43:24] Downloading /2026-07-18 16-36-08.mkv from mega_account_17 ...
+[2026-10-15 10:43:29] Uploading 2026-07-18 16-36-08.mkv to channel 'channel1' ...
+[2026-10-15 10:43:36] SUCCESS: 2026-07-18 16-36-08.mkv -> https://youtu.be/mWQ3md8DqQI (channel: channel1)
+[2026-10-15 10:43:36] Uploading 2026-07-18 16-36-08.mkv to Google Drive ...
+[2026-10-15 10:43:48]   Drive upload attempt 1/3 failed for 2026-07-18 16-36-08.mkv: EOF occurred in violation of protocol (_ssl.c:2437)
+[2026-10-15 10:43:48]   Retrying Drive upload in 10s...
+[2026-10-15 10:44:13] SUCCESS: 2026-07-18 16-36-08.mkv -> Drive file id 1VTZCmXuMpDQzizxlkqBr2uXLHOhVAwFa
+[2026-10-15 10:44:13] Switching MEGA session to mega_account_73 ...
+[2026-10-15 10:44:15] Downloading /2026-08-29 16-45-45.mkv from mega_account_73 ...
+[2026-10-15 10:44:16] Uploading 2026-08-29 16-45-45.mkv to channel 'channel1' ...
+[2026-10-15 10:44:17] SUCCESS: 2026-08-29 16-45-45.mkv -> https://youtu.be/dMlGbiGlFNg (channel: channel1)
+[2026-10-15 10:44:17] Downloading /2026-08-29 16-45-56.mkv from mega_account_73 ...
+[2026-10-15 11:14:17]   Download attempt 1/3 failed for /2026-08-29 16-45-56.mkv: mega-get timed out after 1800s (stalled transfer)
+[2026-10-15 11:14:17]   Retrying in 10s...
+[2026-10-15 11:14:27]   Download attempt 2/3 failed for /2026-08-29 16-45-56.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-14-27.747432 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:14:27]   Retrying in 20s...
+[2026-10-15 11:14:47]   Download attempt 3/3 failed for /2026-08-29 16-45-56.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-14-47.752043 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:14:47] FAILED (download, 3 attempts exhausted): /2026-08-29 16-45-56.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-14-47.752043 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:14:47] Downloading /2026-08-29 18-47-34.mkv from mega_account_73 ...
+[2026-10-15 11:14:47]   Download attempt 1/3 failed for /2026-08-29 18-47-34.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-14-47.804935 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:14:47]   Retrying in 10s...
+[2026-10-15 11:14:57]   Download attempt 2/3 failed for /2026-08-29 18-47-34.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-14-57.809428 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:14:57]   Retrying in 20s...
+[2026-10-15 11:15:17]   Download attempt 3/3 failed for /2026-08-29 18-47-34.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-17.814062 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:17] FAILED (download, 3 attempts exhausted): /2026-08-29 18-47-34.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-17.814062 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:17] Downloading /2026-08-30 11-34-53.mkv from mega_account_73 ...
+[2026-10-15 11:15:17]   Download attempt 1/3 failed for /2026-08-30 11-34-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-17.826191 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:17]   Retrying in 10s...
+[2026-10-15 11:15:27]   Download attempt 2/3 failed for /2026-08-30 11-34-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-27.830694 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:27]   Retrying in 20s...
+[2026-10-15 11:15:47]   Download attempt 3/3 failed for /2026-08-30 11-34-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-47.835271 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:47] FAILED (download, 3 attempts exhausted): /2026-08-30 11-34-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-47.835271 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:47] Downloading /2026-08-30 11-35-23.mkv from mega_account_73 ...
+[2026-10-15 11:15:47]   Download attempt 1/3 failed for /2026-08-30 11-35-23.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-47.847228 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:47]   Retrying in 10s...
+[2026-10-15 11:15:57]   Download attempt 2/3 failed for /2026-08-30 11-35-23.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-15-57.851788 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:15:57]   Retrying in 20s...
+[2026-10-15 11:16:17]   Download attempt 3/3 failed for /2026-08-30 11-35-23.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-17.856370 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:17] FAILED (download, 3 attempts exhausted): /2026-08-30 11-35-23.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-17.856370 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:17] Downloading /2026-08-30 11-36-14.mkv from mega_account_73 ...
+[2026-10-15 11:16:17]   Download attempt 1/3 failed for /2026-08-30 11-36-14.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-17.868376 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:17]   Retrying in 10s...
+[2026-10-15 11:16:27]   Download attempt 2/3 failed for /2026-08-30 11-36-14.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-27.872890 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:27]   Retrying in 20s...
+[2026-10-15 11:16:47]   Download attempt 3/3 failed for /2026-08-30 11-36-14.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-47.877455 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:47] FAILED (download, 3 attempts exhausted): /2026-08-30 11-36-14.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-47.877455 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:47] Downloading /2026-08-30 14-00-53.mkv from mega_account_73 ...
+[2026-10-15 11:16:47]   Download attempt 1/3 failed for /2026-08-30 14-00-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-47.889674 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:47]   Retrying in 10s...
+[2026-10-15 11:16:57]   Download attempt 2/3 failed for /2026-08-30 14-00-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-16-57.894180 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:16:57]   Retrying in 20s...
+[2026-10-15 11:17:17]   Download attempt 3/3 failed for /2026-08-30 14-00-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-17.898730 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:17] FAILED (download, 3 attempts exhausted): /2026-08-30 14-00-53.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-17.898730 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:17] Downloading /2026-09-05 14-33-20.mkv from mega_account_73 ...
+[2026-10-15 11:17:17]   Download attempt 1/3 failed for /2026-09-05 14-33-20.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-17.910708 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:17]   Retrying in 10s...
+[2026-10-15 11:17:27]   Download attempt 2/3 failed for /2026-09-05 14-33-20.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-27.915349 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:27]   Retrying in 20s...
+[2026-10-15 11:17:47]   Download attempt 3/3 failed for /2026-09-05 14-33-20.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-47.920013 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:47] FAILED (download, 3 attempts exhausted): /2026-09-05 14-33-20.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-47.920013 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:47] Downloading /2026-09-05 15-19-46.mkv from mega_account_73 ...
+[2026-10-15 11:17:47]   Download attempt 1/3 failed for /2026-09-05 15-19-46.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-47.932783 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:47]   Retrying in 10s...
+[2026-10-15 11:17:57]   Download attempt 2/3 failed for /2026-09-05 15-19-46.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-17-57.937302 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:17:57]   Retrying in 20s...
+[2026-10-15 11:18:17]   Download attempt 3/3 failed for /2026-09-05 15-19-46.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-17.941861 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:17] FAILED (download, 3 attempts exhausted): /2026-09-05 15-19-46.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-17.941861 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:17] Downloading /2026-09-05 16-38-17.mkv from mega_account_73 ...
+[2026-10-15 11:18:17]   Download attempt 1/3 failed for /2026-09-05 16-38-17.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-17.954603 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:17]   Retrying in 10s...
+[2026-10-15 11:18:27]   Download attempt 2/3 failed for /2026-09-05 16-38-17.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-27.959128 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:27]   Retrying in 20s...
+[2026-10-15 11:18:47]   Download attempt 3/3 failed for /2026-09-05 16-38-17.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-47.963690 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:47] FAILED (download, 3 attempts exhausted): /2026-09-05 16-38-17.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-47.963690 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:47] Downloading /2026-09-06 09-33-21.mkv from mega_account_73 ...
+[2026-10-15 11:18:47]   Download attempt 1/3 failed for /2026-09-06 09-33-21.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-47.976799 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:47]   Retrying in 10s...
+[2026-10-15 11:18:57]   Download attempt 2/3 failed for /2026-09-06 09-33-21.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-18-57.981402 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:18:57]   Retrying in 20s...
+[2026-10-15 11:19:17]   Download attempt 3/3 failed for /2026-09-06 09-33-21.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-17.986081 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:17] FAILED (download, 3 attempts exhausted): /2026-09-06 09-33-21.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-17.986081 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:17] Downloading /2026-09-06 14-13-10.mkv from mega_account_73 ...
+[2026-10-15 11:19:17]   Download attempt 1/3 failed for /2026-09-06 14-13-10.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-17.998332 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:17]   Retrying in 10s...
+[2026-10-15 11:19:28]   Download attempt 2/3 failed for /2026-09-06 14-13-10.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-28.002856 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:28]   Retrying in 20s...
+[2026-10-15 11:19:48]   Download attempt 3/3 failed for /2026-09-06 14-13-10.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-48.007804 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:48] FAILED (download, 3 attempts exhausted): /2026-09-06 14-13-10.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-48.007804 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:48] Downloading /2026-09-06 14-13-25.mkv from mega_account_73 ...
+[2026-10-15 11:19:48]   Download attempt 1/3 failed for /2026-09-06 14-13-25.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-48.021060 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:48]   Retrying in 10s...
+[2026-10-15 11:19:58]   Download attempt 2/3 failed for /2026-09-06 14-13-25.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-19-58.025732 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:19:58]   Retrying in 20s...
+[2026-10-15 11:20:18]   Download attempt 3/3 failed for /2026-09-06 14-13-25.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-18.030363 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:18] FAILED (download, 3 attempts exhausted): /2026-09-06 14-13-25.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-18.030363 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:18] Downloading /2026-09-06 14-13-33.mkv from mega_account_73 ...
+[2026-10-15 11:20:18]   Download attempt 1/3 failed for /2026-09-06 14-13-33.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-18.042910 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:18]   Retrying in 10s...
+[2026-10-15 11:20:28]   Download attempt 2/3 failed for /2026-09-06 14-13-33.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-28.047401 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:28]   Retrying in 20s...
+[2026-10-15 11:20:48]   Download attempt 3/3 failed for /2026-09-06 14-13-33.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-48.052111 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:48] FAILED (download, 3 attempts exhausted): /2026-09-06 14-13-33.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-48.052111 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:48] Downloading /2026-09-06 14-13-43.mkv from mega_account_73 ...
+[2026-10-15 11:20:48]   Download attempt 1/3 failed for /2026-09-06 14-13-43.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-48.064934 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:48]   Retrying in 10s...
+[2026-10-15 11:20:58]   Download attempt 2/3 failed for /2026-09-06 14-13-43.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-20-58.069521 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:20:58]   Retrying in 20s...
+[2026-10-15 11:21:18]   Download attempt 3/3 failed for /2026-09-06 14-13-43.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-21-18.074158 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:21:18] FAILED (download, 3 attempts exhausted): /2026-09-06 14-13-43.mkv: mega-get failed: -------------------------------------------------------------------------------
+|                   You are running out of available storage.                   |
+|        You can change your account plan to increase your quota limit.         |
+|                   See "help --upgrade" for further details.                   |
+ -------------------------------------------------------------------------------
+[2026-10-15_11-21-18.074158 cmd ERR  Failed to get account details: Invalid argument]
+[2026-10-15 11:21:18] Run complete.
