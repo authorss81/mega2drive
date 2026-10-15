@@ -513,8 +513,29 @@ def _load_or_authorize(token_path, secret_path, scopes, label, authorize_only):
 
     # Either there was no token at all, or the refresh failed and a human is
     # here to redo the consent flow.
-    if not secret_path.exists():
-        log(f"ERROR: missing client secret file {secret_path} for {label}")
+    #
+    # The secret file must be validated, not just checked for existence. The
+    # workflow writes EMPTY files for secrets that were never set (an unset
+    # TOKEN_CHANNEL2 becomes a 0-byte token_channel2.json), and an empty file
+    # exists but is not valid - from_client_secrets_file then raises a bare
+    # JSONDecodeError that killed the whole run. A channel with no credentials
+    # is skipped, not fatal.
+    try:
+        secret_text = secret_path.read_text(encoding="utf-8") if secret_path.exists() else ""
+    except OSError as e:
+        secret_text = ""
+    secret_ok = False
+    if secret_text.strip():
+        try:
+            secret_data = json.loads(secret_text)
+            secret_ok = isinstance(secret_data, dict) and (
+                "installed" in secret_data or "web" in secret_data)
+        except ValueError:
+            secret_ok = False
+    if not secret_ok:
+        log(f"Skipping {label}: no usable client secret at {secret_path.name} "
+            f"(file missing, empty, or not a valid OAuth client JSON). "
+            f"If this channel should be active, add its CLIENT_SECRET secret and re-authorize.")
         return None
     log(f"--- Authorize {label} (browser will open) ---")
     flow = InstalledAppFlow.from_client_secrets_file(str(secret_path), scopes)
