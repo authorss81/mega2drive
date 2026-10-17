@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "list-only (inventory only, no transfers) or run-all"
+        description: "list-only (inventory only, no transfers), run-all, or retry-failed"
         required: false
         default: "run-all"
   # RE-ENABLED 2026-10-11 after full duplicate cleanup (370 removed, verified)
@@ -95,8 +95,17 @@ jobs:
 
       - name: Run the pipeline
         run: |
-          if [ "${{ github.event.inputs.mode || 'run-all' }}" = "list-only" ]; then
+          MODE="${{ github.event.inputs.mode || 'run-all' }}"
+          if [ "$MODE" = "list-only" ]; then
             python mega_to_youtube.py --list-only
+          elif [ "$MODE" = "retry-failed" ]; then
+            # Re-attempts only rows the manifest marks "failed". A normal run
+            # skips those forever (mega_to_youtube.py:892), which is the point -
+            # it stops a permanently broken file from eating every run. But a
+            # TRANSIENT cause (e.g. a MEGA transfer/storage quota that later
+            # resets) leaves the row frozen as "failed" with no way back except
+            # this mode. Anything that fails again is re-marked "failed".
+            python mega_to_youtube.py --retry-failed
           else
             python mega_to_youtube.py --run-all
           fi
