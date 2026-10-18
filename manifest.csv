@@ -242,60 +242,15 @@ timestamp,mega_account,mega_remote_path,filename,file_size_bytes,mega_modified,y
 2026-10-17T00:56:06.486080,mega_account_73,/2026-08-30 11-34-53.mkv,2026-08-30 11-34-53.mkv,,2026-08-30T06:04:54,channel1,FftIbOjjwG4,success,1,,success,1sPPspO19p9FYdbGm4aCMnPfy669QDwGV,
 2026-10-17T00:56:08.571345,mega_account_73,/2026-08-30 11-35-23.mkv,2026-08-30 11-35-23.mkv,51639,2026-08-30T06:05:24,channel1,Pj3AuVsKaLc,success,1,,success,1bfz9kKlMIGwgxwar_zHqXqZ3eEiz5T3y,
 2026-10-17T00:56:10.872206,mega_account_73,/2026-08-30 11-36-14.mkv,2026-08-30 11-36-14.mkv,53914,2026-08-30T06:06:16,channel1,36fTbIwXO2c,success,1,,success,1SE3HyOiTLEw2mPnmyfM0pFREMOb9BVXu,
-2026-10-17T01:26:40.976193,mega_account_73,/2026-08-30 14-00-53.mkv,2026-08-30 14-00-53.mkv,2470125451,2026-08-30T10:35:15,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-26-40.975418 cmd ERR  Failed to get account details: Invalid argument]",success,16Q4UwzIqCF776_kG8IjtR-_w_aVTxbCI,
-2026-10-17T01:27:10.993552,mega_account_73,/2026-09-05 14-33-20.mkv,2026-09-05 14-33-20.mkv,886853593,2026-09-05T09:47:45,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-27-10.992758 cmd ERR  Failed to get account details: Invalid argument]",success,16fg2psf9X74u4tx93bgCZ161pXwg6zha,
-2026-10-17T01:27:41.011896,mega_account_73,/2026-09-05 15-19-46.mkv,2026-09-05 15-19-46.mkv,1189816070,2026-09-05T10:49:36,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-27-41.011101 cmd ERR  Failed to get account details: Invalid argument]",success,1jx2O1FMsXuLmYut31KbT_dPbQuq4nZj5,
-2026-10-17T01:28:11.029007,mega_account_73,/2026-09-05 16-38-17.mkv,2026-09-05 16-38-17.mkv,2146572225,2026-09-05T12:55:44,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-28-11.028215 cmd ERR  Failed to get account details: Invalid argument]",success,1m2KndfPCfSr8l-yJr2WW2195OQ1UGL5y,
-2026-10-17T01:28:41.046282,mega_account_73,/2026-09-06 09-33-21.mkv,2026-09-06 09-33-21.mkv,2584466502,2026-09-06T06:13:45,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-28-41.045509 cmd ERR  Failed to get account details: Invalid argument]",success,1Ia4oATCk8uvvvqF5Hrd5jEEMgODuYRDS,
-2026-10-17T01:29:11.063672,mega_account_73,/2026-09-06 14-13-10.mkv,2026-09-06 14-13-10.mkv,65430,2026-09-06T08:43:11,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-29-11.062877 cmd ERR  Failed to get account details: Invalid argument]",success,16WvS6RbKEJFa4g48I8LcH3tzyoDxKS1Z,
-2026-10-17T01:29:41.082343,mega_account_73,/2026-09-06 14-13-25.mkv,2026-09-06 14-13-25.mkv,66840,2026-09-06T08:43:26,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-29-41.080428 cmd ERR  Failed to get account details: Invalid argument]",success,1lQnsgApjNtPHn-aor_o8UM0wYVCN4I7u,
-2026-10-17T01:30:11.100813,mega_account_73,/2026-09-06 14-13-33.mkv,2026-09-06 14-13-33.mkv,,2026-09-06T08:43:34,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-30-11.100030 cmd ERR  Failed to get account details: Invalid argument]",success,1yJit5963QFpX6v-MaDkcr16oZCQUP0NJ,
-2026-10-17T01:30:41.118214,mega_account_73,/2026-09-06 14-13-43.mkv,2026-09-06 14-13-43.mkv,67184,2026-09-06T08:43:44,,,failed,3,"download: mega-get failed: -------------------------------------------------------------------------------
-|                   You are running out of available storage.                   |
-|        You can change your account plan to increase your quota limit.         |
-|                   See ""help --upgrade"" for further details.                   |
- -------------------------------------------------------------------------------
-[2026-10-17_01-30-41.117338 cmd ERR  Failed to get account details: Invalid argument]",success,1rWP6Ix_S2q-kCwGIuSEQxqixHJ1IXsNv,
+2026-10-18T01:01:13.555818,mega_account_73,/2026-08-30 14-00-53.mkv,2026-08-30 14-00-53.mkv,2470125451,2026-08-30T10:35:15,channel1,Hjxb6VV_TkA,success,1,,success,16Q4UwzIqCF776_kG8IjtR-_w_aVTxbCI,
+2026-10-18T01:01:29.868725,mega_account_73,/2026-09-05 14-33-20.mkv,2026-09-05 14-33-20.mkv,886853593,2026-09-05T09:47:45,channel1,SPCOPnuQ38I,success,1,,success,16fg2psf9X74u4tx93bgCZ161pXwg6zha,
+2026-10-18T01:01:58.736062,mega_account_73,/2026-09-05 15-19-46.mkv,2026-09-05 15-19-46.mkv,1189816070,2026-09-05T10:49:36,channel1,aHlvqtOkaZs,success,1,,success,1jx2O1FMsXuLmYut31KbT_dPbQuq4nZj5,
+2026-10-18T01:02:31.646074,mega_account_73,/2026-09-05 16-38-17.mkv,2026-09-05 16-38-17.mkv,2146572225,2026-09-05T12:55:44,channel1,cQWZ6O0oxQU,success,1,,success,1m2KndfPCfSr8l-yJr2WW2195OQ1UGL5y,
+2026-10-18T01:02:59.678306,mega_account_73,/2026-09-06 09-33-21.mkv,2026-09-06 09-33-21.mkv,2584466502,2026-09-06T06:13:45,channel1,LpKj08OFlM4,success,1,,success,1Ia4oATCk8uvvvqF5Hrd5jEEMgODuYRDS,
+2026-10-18T01:03:02.468946,mega_account_73,/2026-09-06 14-13-10.mkv,2026-09-06 14-13-10.mkv,65430,2026-09-06T08:43:11,channel1,GNT8HDF4T0Y,success,1,,success,16WvS6RbKEJFa4g48I8LcH3tzyoDxKS1Z,
+2026-10-18T01:03:04.997065,mega_account_73,/2026-09-06 14-13-25.mkv,2026-09-06 14-13-25.mkv,66840,2026-09-06T08:43:26,channel1,RVEaMZRzf9E,success,1,,success,1lQnsgApjNtPHn-aor_o8UM0wYVCN4I7u,
+2026-10-18T01:03:07.435334,mega_account_73,/2026-09-06 14-13-33.mkv,2026-09-06 14-13-33.mkv,,2026-09-06T08:43:34,channel1,2DqnqweSbxg,success,1,,success,1yJit5963QFpX6v-MaDkcr16oZCQUP0NJ,
+2026-10-18T01:03:10.288947,mega_account_73,/2026-09-06 14-13-43.mkv,2026-09-06 14-13-43.mkv,67184,2026-09-06T08:43:44,channel1,yCu87gjaL98,success,1,,success,1rWP6Ix_S2q-kCwGIuSEQxqixHJ1IXsNv,
 2026-09-29T07:23:16.638209,mega_account_1,/New folder/2026-07-23 18-16-01.mkv,2026-07-23 18-16-01.mkv,612065696,2026-07-23T13:16:40,channel1,lDwHeMUh7Aw,success,1,,success,1K7DOcYbWflHZoe-mahh7RY99_9nO31cH,
 2026-10-12T08:25:48.671649,mega_account_13,/2026-09-27 14-41-15.mkv,2026-09-27 14-41-15.mkv,1644578382,2026-09-27T10:33:39,channel1,BamzvqFk15g,success,1,,success,19SenqT5-2kyBquny32_F1lTGcOU8qUAQ,recorded from killed run 37365951324 log
 2026-10-12T08:26:06.868499,mega_account_13,/2026-09-27 17-44-50.mkv,2026-09-27 17-44-50.mkv,1645576528,2026-09-27T13:37:19,channel1,nW0n7X9HeSQ,success,1,,success,1YmAg9_RTp-WHPukQC2MoFK0czXJOIzf1,recorded from killed run 37365951324 log
