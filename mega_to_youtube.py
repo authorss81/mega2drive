@@ -979,6 +979,31 @@ def run(config, single_file_test=False, retry_failed_only=False):
             save_manifest_rows(config, rows)
             continue
 
+        # Size gate. `mega-get` can exit 0 while writing only PART of the file:
+        # when the account hits a MEGA transfer/storage quota the transfer aborts
+        # partway and leaves a short file on disk. Those fragments were then being
+        # uploaded to Drive and YouTube as if they were whole videos - YouTube
+        # refused them ("Processing abandoned") and Drive stored 62KB stubs that
+        # were recorded as a successful backup. Nothing downstream can detect
+        # this, so it is checked here, before either upload sees the file.
+        expected = item["file_size_bytes"]
+        if expected:
+            actual = local_file.stat().st_size
+            if actual != expected:
+                log(f"FAILED (truncated download): {remote_path}: "
+                    f"got {actual} bytes, MEGA reports {expected}")
+                upsert_manifest_row(
+                    rows, timestamp=datetime.now().isoformat(), mega_account=alias,
+                    mega_remote_path=remote_path, filename=item["filename"],
+                    file_size_bytes=item["file_size_bytes"] or "",
+                    mega_modified=item["mega_modified"].isoformat() if item["mega_modified"] else "",
+                    youtube_channel="", youtube_video_id="", status="failed",
+                    attempts=dl_attempts,
+                    error=f"truncated download: got {actual} of {expected} bytes",
+                )
+                save_manifest_rows(config, rows)
+                continue
+
         if channel_name is None and due_for_probe:
             # Time to find out whether the YouTube allowance came back. Probing
             # is just the normal upload attempt for this file, so it costs
