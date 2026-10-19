@@ -5306,3 +5306,6 @@
 [2026-10-19 02:33:29] Listing videos in MEGA account: mega_account_73
 [2026-10-19 02:33:32]   -> 19 video(s) found
 [2026-10-19 02:33:32] Run complete.
+[2026-10-19 11:39:43] Token for YouTube channel 'channel1' cannot be refreshed (RefreshError) - expired or revoked.
+[2026-10-19 11:39:43] Fix with: python mega_to_youtube.py --authorize-only
+[2026-10-19 11:39:43] No valid YouTube clients available. Run --authorize-only first.
