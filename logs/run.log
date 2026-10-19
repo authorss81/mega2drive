@@ -5309,3 +5309,6 @@
 [2026-10-19 11:39:43] Token for YouTube channel 'channel1' cannot be refreshed (RefreshError) - expired or revoked.
 [2026-10-19 11:39:43] Fix with: python mega_to_youtube.py --authorize-only
 [2026-10-19 11:39:43] No valid YouTube clients available. Run --authorize-only first.
+[2026-10-19 18:00:43] Token for YouTube channel 'channel1' cannot be refreshed (RefreshError) - expired or revoked.
+[2026-10-19 18:00:43] Fix with: python mega_to_youtube.py --authorize-only
+[2026-10-19 18:00:43] No valid YouTube clients available. Run --authorize-only first.
