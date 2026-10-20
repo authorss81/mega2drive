@@ -165,18 +165,74 @@ jobs:
           fi
           git commit -q -m "Update manifest/logs [automated]"
 
-          # Retry with a rebase. A plain `git push` is rejected whenever anyone
-          # pushes to main while this run is in flight - which happens whenever
-          # a fix is committed during a multi-hour run. Rebasing onto the new
-          # remote head and pushing again resolves it in the common case.
-          for attempt in 1 2 3; do
+          # Push. A plain `git push` is rejected whenever anyone pushes to main
+          # while this run is in flight. Previously this rebased and retried,
+          # and when the rebase hit a conflict it gave up after three attempts
+          # and only warned - the job stayed green but the manifest rows for
+          # everything this run had uploaded were LOST, so the next run
+          # re-uploaded them as duplicates.
+          #
+          # Instead: on a rejected push, take the remote manifest, merge it
+          # three-way with ours (base = the pre-run snapshot this job already
+          # took, ours = what this run produced, theirs = what is on the
+          # remote), and retry. A CSV conflict is resolved by which row got
+          # further, not by whoever pushed last.
+          for attempt in 1 2 3 4 5; do
             if git push; then
               echo "pushed on attempt $attempt"
               exit 0
             fi
-            echo "push attempt $attempt rejected; rebasing onto origin/main and retrying"
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            echo "push attempt $attempt rejected; merging manifests and retrying"
+
+            git fetch origin "${GITHUB_REF_NAME}" || true
+            git show "origin/${GITHUB_REF_NAME}:manifest.csv" > /tmp/manifest.theirs.csv 2>/dev/null \
+              || echo "{}" > /tmp/manifest.theirs.csv
+            BASE_SNAPSHOT="${RUN_REPORT_TMP:-/tmp}/run_report/manifest.csv.before"
+            if [ ! -f "$BASE_SNAPSHOT" ]; then
+              echo "no pre-run snapshot at $BASE_SNAPSHOT; falling back to 'ours wins'"
+              BASE_SNAPSHOT=/tmp/manifest.base.csv
+              git show "origin/${GITHUB_REF_NAME}:manifest.csv" > "$BASE_SNAPSHOT" 2>/dev/null \
+                || echo "{}" > "$BASE_SNAPSHOT"
+            fi
+            cp manifest.csv /tmp/manifest.ours.csv
+
+            python merge_manifest.py \
+              --base "$BASE_SNAPSHOT" \
+              --ours /tmp/manifest.ours.csv \
+              --theirs /tmp/manifest.theirs.csv \
+              --out /tmp/manifest.merged.csv
+
+            # Rebuild the commit on top of the new remote head, carrying the
+            # merged manifest.
+            #
+            # `git reset --hard` (not --soft) is required here. With --soft the
+            # index keeps THIS run's tree, so any file that exists on the
+            # remote but not in this run's checkout - a new script, a new
+            # workflow - would be DELETED by the resulting commit. --hard
+            # takes the remote's tree wholesale (so nothing remote-only is
+            # lost) and this run's own files are copied back on top.
+            #
+            # The logs and inventory are saved first because --hard discards
+            # the working tree. logs/run.log is a single shared path that each
+            # run overwrites, so restoring ours is the normal behaviour.
+            cp -r logs /tmp/ours_logs 2>/dev/null || true
+            cp inventory.csv /tmp/ours_inventory.csv 2>/dev/null || true
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            cp /tmp/manifest.merged.csv manifest.csv
+            if [ -d /tmp/ours_logs ]; then
+              mkdir -p logs
+              cp -r /tmp/ours_logs/. logs/ 2>/dev/null || true
+            fi
+            if [ -f /tmp/ours_inventory.csv ]; then
+              cp /tmp/ours_inventory.csv inventory.csv
+            fi
+            for f in manifest.csv inventory.csv logs/; do
+              if [ -e "$f" ]; then
+                git add -A "$f"
+              fi
+            done
+            git commit -q -m "Update manifest/logs [automated] [merged]" || true
             sleep 5
           done
-          echo "::warning::could not push the manifest after 3 attempts."
+          echo "::warning::could not push the manifest after 5 attempts."
           echo "The manifest is preserved in this run's artifact; restore it if needed."
