@@ -6152,3 +6152,110 @@
 [2026-10-24 11:57:02] Listing videos in MEGA account: mega_account_19
 [2026-10-24 11:57:04]   -> 12 video(s) found
 [2026-10-24 11:57:04] Run complete.
+[2026-10-24 12:04:22] Listing videos in MEGA account: mega_account_1
+[2026-10-24 12:04:25]   -> 15 video(s) found
+[2026-10-24 12:04:25] Listing videos in MEGA account: mega_account_2
+[2026-10-24 12:04:27]   -> 16 video(s) found
+[2026-10-24 12:04:27] Listing videos in MEGA account: mega_account_3
+[2026-10-24 12:04:30]   -> 12 video(s) found
+[2026-10-24 12:04:30] Listing videos in MEGA account: mega_account_5
+[2026-10-24 12:04:33]   -> 12 video(s) found
+[2026-10-24 12:04:33] Listing videos in MEGA account: mega_account_6
+[2026-10-24 12:04:35]   -> 14 video(s) found
+[2026-10-24 12:04:35] Listing videos in MEGA account: mega_account_7
+[2026-10-24 12:04:39]   -> 12 video(s) found
+[2026-10-24 12:04:39] Listing videos in MEGA account: mega_account_8
+[2026-10-24 12:04:42]   -> 11 video(s) found
+[2026-10-24 12:04:42] Listing videos in MEGA account: mega_account_9
+[2026-10-24 12:04:45]   -> 58 video(s) found
+[2026-10-24 12:04:45] Listing videos in MEGA account: mega_account_10
+[2026-10-24 12:04:49]   -> 20 video(s) found
+[2026-10-24 12:04:49] Listing videos in MEGA account: mega_account_11
+[2026-10-24 12:04:52]   -> 12 video(s) found
+[2026-10-24 12:04:52] Listing videos in MEGA account: mega_account_12
+[2026-10-24 12:04:55]   -> 48 video(s) found
+[2026-10-24 12:04:55] Listing videos in MEGA account: mega_account_13
+[2026-10-24 12:04:57]   -> 11 video(s) found
+[2026-10-24 12:04:57] Listing videos in MEGA account: mega_account_14
+[2026-10-24 12:05:00]   -> 16 video(s) found
+[2026-10-24 12:05:00] Listing videos in MEGA account: mega_account_15
+[2026-10-24 12:05:03]   -> 15 video(s) found
+[2026-10-24 12:05:03] Listing videos in MEGA account: mega_account_16
+[2026-10-24 12:05:05]   -> 16 video(s) found
+[2026-10-24 12:05:05] Listing videos in MEGA account: mega_account_17
+[2026-10-24 12:05:08]   -> 17 video(s) found
+[2026-10-24 12:05:08] Listing videos in MEGA account: mega_account_18
+[2026-10-24 12:05:10]   -> 13 video(s) found
+[2026-10-24 12:05:10] Listing videos in MEGA account: mega_account_73
+[2026-10-24 12:05:12]   -> 19 video(s) found
+[2026-10-24 12:05:12] Listing videos in MEGA account: mega_account_19
+[2026-10-24 12:05:15]   -> 12 video(s) found
+[2026-10-24 12:05:15] Listing videos in MEGA account: mega_account_20
+[2026-10-24 12:05:18]   -> 10 video(s) found
+[2026-10-24 12:05:18] Switching MEGA session to mega_account_20 ...
+[2026-10-24 12:05:20] Downloading /2026-01-18 13-26-55.mkv from mega_account_20 ...
+[2026-10-24 12:05:31] Uploading 2026-01-18 13-26-55.mkv to channel 'channel1' ...
+[2026-10-24 12:06:01] SUCCESS: 2026-01-18 13-26-55.mkv -> https://youtu.be/3O_jhokGlh8 (channel: channel1)
+[2026-10-24 12:06:01] Uploading 2026-01-18 13-26-55.mkv to Google Drive ...
+[2026-10-24 12:06:25]   Drive upload attempt 1/3 failed for 2026-01-18 13-26-55.mkv: EOF occurred in violation of protocol (_ssl.c:2437)
+[2026-10-24 12:06:25]   Retrying Drive upload in 10s...
+[2026-10-24 12:06:35]   Drive upload attempt 2/3 failed for 2026-01-18 13-26-55.mkv: <HttpError 502 when requesting None returned "Bad Gateway". Details: "<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 502 (Server Error)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>502.</b> <ins>That’s an error.</ins>
+  <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+">
+[2026-10-24 12:06:35]   Retrying Drive upload in 20s...
+[2026-10-24 12:07:32] SUCCESS: 2026-01-18 13-26-55.mkv -> Drive file id 1cxs_b2zd2DuV1ZDVMWgWFgqi8YBoMXa2
+[2026-10-24 12:07:32] Downloading /2026-04-12 11-48-22.mkv from mega_account_20 ...
+[2026-10-24 12:07:59] Uploading 2026-04-12 11-48-22.mkv to channel 'channel1' ...
+[2026-10-24 12:08:27] SUCCESS: 2026-04-12 11-48-22.mkv -> https://youtu.be/1-zcqlEIutU (channel: channel1)
+[2026-10-24 12:08:27] Uploading 2026-04-12 11-48-22.mkv to Google Drive ...
+[2026-10-24 12:09:01] SUCCESS: 2026-04-12 11-48-22.mkv -> Drive file id 1i_xuFXhp9BzmPBfFmPuKwv0yK1WuSE15
+[2026-10-24 12:09:01] Downloading /2026-05-10 11-45-26.mkv from mega_account_20 ...
+[2026-10-24 12:09:10] Uploading 2026-05-10 11-45-26.mkv to channel 'channel1' ...
+[2026-10-24 12:09:45] SUCCESS: 2026-05-10 11-45-26.mkv -> https://youtu.be/Aja7FgpoME0 (channel: channel1)
+[2026-10-24 12:09:45] Uploading 2026-05-10 11-45-26.mkv to Google Drive ...
+[2026-10-24 12:10:20] SUCCESS: 2026-05-10 11-45-26.mkv -> Drive file id 1W9sfyEEDHA7-xwdN0p5g4Kv8vdlp8oD9
+[2026-10-24 12:10:20] Downloading /2026-05-23 18-48-19.mkv from mega_account_20 ...
+[2026-10-24 12:10:31] Uploading 2026-05-23 18-48-19.mkv to channel 'channel1' ...
+[2026-10-24 12:10:57] SUCCESS: 2026-05-23 18-48-19.mkv -> https://youtu.be/gdV6qDq2CDc (channel: channel1)
+[2026-10-24 12:10:57] Uploading 2026-05-23 18-48-19.mkv to Google Drive ...
+[2026-10-24 12:11:32] SUCCESS: 2026-05-23 18-48-19.mkv -> Drive file id 1_fhg9JHI0Y3e8CrbJxeuTRj0OcSocFPw
+[2026-10-24 12:11:32] Downloading /2026-06-06 16-19-05.mkv from mega_account_20 ...
+[2026-10-24 12:11:42] Uploading 2026-06-06 16-19-05.mkv to channel 'channel1' ...
+[2026-10-24 12:12:09] SUCCESS: 2026-06-06 16-19-05.mkv -> https://youtu.be/Q7auA7GNCfA (channel: channel1)
+[2026-10-24 12:12:09] Uploading 2026-06-06 16-19-05.mkv to Google Drive ...
+[2026-10-24 12:12:45] SUCCESS: 2026-06-06 16-19-05.mkv -> Drive file id 1C_KI_1lJ--WfEdoGJCR_s71pLGy8lz2j
+[2026-10-24 12:12:45] Downloading /2026-06-07 11-48-03.mkv from mega_account_20 ...
+[2026-10-24 12:12:59] Uploading 2026-06-07 11-48-03.mkv to channel 'channel1' ...
+[2026-10-24 12:13:31] SUCCESS: 2026-06-07 11-48-03.mkv -> https://youtu.be/tNyN5NnziYA (channel: channel1)
+[2026-10-24 12:13:31] Uploading 2026-06-07 11-48-03.mkv to Google Drive ...
+[2026-10-24 12:14:04] SUCCESS: 2026-06-07 11-48-03.mkv -> Drive file id 1a7ITRxL8rxim6l3rGFosX8nTBJSEK_xi
+[2026-10-24 12:14:04] Downloading /2026-06-21 11-49-58.mkv from mega_account_20 ...
+[2026-10-24 12:14:15] Uploading 2026-06-21 11-49-58.mkv to channel 'channel1' ...
+[2026-10-24 12:14:43] SUCCESS: 2026-06-21 11-49-58.mkv -> https://youtu.be/3JNZVboN4Uc (channel: channel1)
+[2026-10-24 12:14:43] Uploading 2026-06-21 11-49-58.mkv to Google Drive ...
+[2026-10-24 12:15:14] SUCCESS: 2026-06-21 11-49-58.mkv -> Drive file id 1fgcEWsdqz_HubBUMEdgDM20HJwlkyCxa
+[2026-10-24 12:15:14] Downloading /2026-06-28 11-52-25.mkv from mega_account_20 ...
+[2026-10-24 12:15:25] Uploading 2026-06-28 11-52-25.mkv to channel 'channel1' ...
+[2026-10-24 12:15:47] SUCCESS: 2026-06-28 11-52-25.mkv -> https://youtu.be/VfulHfBpPp4 (channel: channel1)
+[2026-10-24 12:15:47] Uploading 2026-06-28 11-52-25.mkv to Google Drive ...
+[2026-10-24 12:16:20] SUCCESS: 2026-06-28 11-52-25.mkv -> Drive file id 1L4OoLGO4cc5VpUJ7hm2mxRu0gocNBaDK
+[2026-10-24 12:16:20] Downloading /2026-07-05 09-52-41(done).mkv from mega_account_20 ...
+[2026-10-24 12:16:31] Uploading 2026-07-05 09-52-41(done).mkv to channel 'channel1' ...
+[2026-10-24 12:16:58] SUCCESS: 2026-07-05 09-52-41(done).mkv -> https://youtu.be/wVxJTsU51ok (channel: channel1)
+[2026-10-24 12:16:58] Uploading 2026-07-05 09-52-41(done).mkv to Google Drive ...
+[2026-10-24 12:17:30] SUCCESS: 2026-07-05 09-52-41(done).mkv -> Drive file id 1A9gzXwCG3rFMWKh_jkdNTSzwHeeQ46p-
+[2026-10-24 12:17:30] Downloading /2026-07-12 11-57-39.mkv from mega_account_20 ...
+[2026-10-24 12:17:40] Uploading 2026-07-12 11-57-39.mkv to channel 'channel1' ...
+[2026-10-24 12:18:08] SUCCESS: 2026-07-12 11-57-39.mkv -> https://youtu.be/QwdhCPedvdU (channel: channel1)
+[2026-10-24 12:18:08] Uploading 2026-07-12 11-57-39.mkv to Google Drive ...
+[2026-10-24 12:18:45] SUCCESS: 2026-07-12 11-57-39.mkv -> Drive file id 1oTmeFHJi0b3F3x_0GZEOV4gM39pElSmQ
+[2026-10-24 12:18:45] Run complete.
