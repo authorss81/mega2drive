@@ -8,6 +8,14 @@ credentials/
 *.json
 downloads/
 
+# EXCEPTION: the run report. `*.json` above exists to keep credential files
+# out of a public repo, but it also swallowed logs/last_run.json - which the
+# dispatcher workflow reads to decide whether to chain another run. Ignored
+# means never committed, so the dispatcher always saw "no run report" and
+# never chained; the backlog only advanced on the 5-hourly cron. This file
+# holds counters and a run id, never a credential, so it is safe to track.
+!logs/last_run.json
+
 # Python bytecode from local testing / compile checks
 __pycache__/
 *.pyc
