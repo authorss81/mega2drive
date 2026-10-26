@@ -74,7 +74,10 @@ if /i not "%WATCH%"=="watch" (
 
 gh run watch "%RUNID%" --repo "%REPO%" --exit-status >nul 2>&1
 echo ==^> Result
-gh run view "%RUNID%" --repo "%REPO%" --json conclusion --jq "\"conclusion: \" + .conclusion"
+rem Bare --jq expression on purpose: cmd.exe strips nested double quotes, and an
+rem expression like ".status + \" / \" + .conclusion" then arrives as 3 arguments
+rem ("accepts at most 1 arg(s), received 3"). A single field has no such problem.
+gh run view "%RUNID%" --repo "%REPO%" --json conclusion --jq .conclusion
 exit /b 0
 
 :fail
