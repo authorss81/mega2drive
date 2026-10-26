@@ -129,8 +129,14 @@ jobs:
           pending = int(report.get("pending_total", 0) or 0)
           out("completed", completed)
           out("pending", pending)
+          # MUST go to stderr: this step's stdout is redirected straight into
+          # $GITHUB_OUTPUT, and a bare print() lands there as a line without
+          # "key=value". GitHub then fails the step with
+          # "Invalid format 'run 123 (mega2yt): completed 0 this run...'",
+          # which is exactly what happened on 2026-10-26.
           print(f"run {report.get('run_id')} ({pipeline}): completed {completed} this run, "
-                f"{pending} still pending, {report.get('completed_total')} done in total.")
+                f"{pending} still pending, {report.get('completed_total')} done in total.",
+                file=sys.stderr)
 
           if pending == 0:
               print("Backlog clear - nothing left to do.", file=sys.stderr)
