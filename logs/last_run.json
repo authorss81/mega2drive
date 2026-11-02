@@ -1,14 +1,14 @@
 {
   "completed_before_run": 362,
-  "completed_this_run": 0,
-  "completed_total": 362,
+  "completed_this_run": 17,
+  "completed_total": 379,
   "first_run": false,
-  "generated_at": "2026-11-02T03:38:04.547776+00:00",
+  "generated_at": "2026-11-02T14:42:40.839631+00:00",
   "manifest": "manifest.csv",
   "pending_before_run": 15,
   "pending_total": 15,
   "pipeline": "mega2yt",
-  "rows_seen": 377,
+  "rows_seen": 394,
   "run_attempt": "1",
-  "run_id": "41383994323"
+  "run_id": "41460698189"
 }
