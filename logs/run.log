@@ -8832,3 +8832,85 @@
 [2026-11-03 13:22:28] MEGA login FAILED for mega_account_33 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_13-22-28.621221 cmd ERR  Login failed: invalid email or password]
 [2026-11-03 13:22:30] MEGA login FAILED for mega_account_34 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_13-22-30.946914 cmd ERR  Login failed: invalid email or password]
 [2026-11-03 13:22:33] MEGA login FAILED for mega_account_35 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_13-22-33.338977 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:43:18] Listing videos in MEGA account: mega_account_1
+[2026-11-03 22:43:20]   -> 15 video(s) found
+[2026-11-03 22:43:20] Listing videos in MEGA account: mega_account_2
+[2026-11-03 22:43:22]   -> 16 video(s) found
+[2026-11-03 22:43:22] Listing videos in MEGA account: mega_account_3
+[2026-11-03 22:43:24]   -> 12 video(s) found
+[2026-11-03 22:43:24] Listing videos in MEGA account: mega_account_5
+[2026-11-03 22:43:26]   -> 12 video(s) found
+[2026-11-03 22:43:26] Listing videos in MEGA account: mega_account_6
+[2026-11-03 22:43:28]   -> 14 video(s) found
+[2026-11-03 22:43:28] Listing videos in MEGA account: mega_account_7
+[2026-11-03 22:43:30]   -> 12 video(s) found
+[2026-11-03 22:43:30] Listing videos in MEGA account: mega_account_8
+[2026-11-03 22:43:32]   -> 11 video(s) found
+[2026-11-03 22:43:32] Listing videos in MEGA account: mega_account_9
+[2026-11-03 22:43:34]   -> 58 video(s) found
+[2026-11-03 22:43:34] Listing videos in MEGA account: mega_account_10
+[2026-11-03 22:43:37]   -> 20 video(s) found
+[2026-11-03 22:43:37] Listing videos in MEGA account: mega_account_11
+[2026-11-03 22:43:39]   -> 12 video(s) found
+[2026-11-03 22:43:39] Listing videos in MEGA account: mega_account_12
+[2026-11-03 22:43:42]   -> 48 video(s) found
+[2026-11-03 22:43:42] Listing videos in MEGA account: mega_account_13
+[2026-11-03 22:43:44]   -> 11 video(s) found
+[2026-11-03 22:43:44] Listing videos in MEGA account: mega_account_14
+[2026-11-03 22:43:47]   -> 16 video(s) found
+[2026-11-03 22:43:47] Listing videos in MEGA account: mega_account_15
+[2026-11-03 22:43:49]   -> 15 video(s) found
+[2026-11-03 22:43:49] Listing videos in MEGA account: mega_account_16
+[2026-11-03 22:43:51]   -> 16 video(s) found
+[2026-11-03 22:43:51] Listing videos in MEGA account: mega_account_17
+[2026-11-03 22:43:54]   -> 17 video(s) found
+[2026-11-03 22:43:54] Listing videos in MEGA account: mega_account_18
+[2026-11-03 22:43:56]   -> 13 video(s) found
+[2026-11-03 22:43:56] Listing videos in MEGA account: mega_account_73
+[2026-11-03 22:43:58]   -> 19 video(s) found
+[2026-11-03 22:43:58] Listing videos in MEGA account: mega_account_19
+[2026-11-03 22:44:00]   -> 12 video(s) found
+[2026-11-03 22:44:00] Listing videos in MEGA account: mega_account_20
+[2026-11-03 22:44:02]   -> 10 video(s) found
+[2026-11-03 22:44:02] Listing videos in MEGA account: mega_account_21
+[2026-11-03 22:44:05]   -> 10 video(s) found
+[2026-11-03 22:44:05] Listing videos in MEGA account: mega_account_22
+[2026-11-03 22:44:07]   -> 10 video(s) found
+[2026-11-03 22:44:07] Listing videos in MEGA account: mega_account_23
+[2026-11-03 22:44:09]   -> 9 video(s) found
+[2026-11-03 22:44:09] Listing videos in MEGA account: mega_account_24
+[2026-11-03 22:44:11]   -> 6 video(s) found
+[2026-11-03 22:44:11] Listing videos in MEGA account: mega_account_25
+[2026-11-03 22:44:13] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-13.683636 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:13] Listing videos in MEGA account: mega_account_26
+[2026-11-03 22:44:15] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-15.364213 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:15] Listing videos in MEGA account: mega_account_27
+[2026-11-03 22:44:16] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-16.583596 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:16] Listing videos in MEGA account: mega_account_28
+[2026-11-03 22:44:17] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-17.820176 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:17] Listing videos in MEGA account: mega_account_29
+[2026-11-03 22:44:18] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-18.905058 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:18] Listing videos in MEGA account: mega_account_30
+[2026-11-03 22:44:19] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-19.878617 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:19] Listing videos in MEGA account: mega_account_31
+[2026-11-03 22:44:21] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-21.621341 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:21] Listing videos in MEGA account: mega_account_32
+[2026-11-03 22:44:22] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-22.877982 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:22] Listing videos in MEGA account: mega_account_33
+[2026-11-03 22:44:24] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-24.081109 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:24] Listing videos in MEGA account: mega_account_34
+[2026-11-03 22:44:26] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-26.015022 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:26] Listing videos in MEGA account: mega_account_35
+[2026-11-03 22:44:27] MEGA login FAILED for [account] — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-44-27.713861 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:44:27] Run complete.
+[2026-11-03 22:45:18] MEGA login FAILED for mega_account_25 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-18.725184 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:20] MEGA login FAILED for mega_account_26 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-20.094431 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:21] MEGA login FAILED for mega_account_27 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-21.298579 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:22] MEGA login FAILED for mega_account_28 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-22.177933 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:26] MEGA login FAILED for mega_account_29 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-26.093719 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:28] MEGA login FAILED for mega_account_30 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-28.501191 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:29] MEGA login FAILED for mega_account_31 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-29.747788 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:30] MEGA login FAILED for mega_account_32 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-30.781239 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:32] MEGA login FAILED for mega_account_33 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-32.053076 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:33] MEGA login FAILED for mega_account_34 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-33.645510 cmd ERR  Login failed: invalid email or password]
+[2026-11-03 22:45:34] MEGA login FAILED for mega_account_35 — account may not exist, be suspended, or have wrong credentials: [2026-11-03_22-45-34.789016 cmd ERR  Login failed: invalid email or password]
