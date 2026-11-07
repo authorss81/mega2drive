@@ -3,12 +3,12 @@
   "completed_this_run": 0,
   "completed_total": 379,
   "first_run": false,
-  "generated_at": "2026-11-07T03:53:09.394600+00:00",
+  "generated_at": "2026-11-07T12:09:29.593061+00:00",
   "manifest": "manifest.csv",
   "pending_before_run": 15,
   "pending_total": 15,
   "pipeline": "mega2yt",
   "rows_seen": 394,
   "run_attempt": "1",
-  "run_id": "42335848134"
+  "run_id": "42371198027"
 }
