@@ -9874,3 +9874,17 @@
 [2026-11-10 22:41:59] MEGA login FAILED for mega_account_33 — account may not exist, be suspended, or have wrong credentials: [2026-11-10_22-41-59.296865 cmd ERR  Login failed: invalid email or password]
 [2026-11-10 22:42:01] MEGA login FAILED for mega_account_34 — account may not exist, be suspended, or have wrong credentials: [2026-11-10_22-42-01.965041 cmd ERR  Login failed: invalid email or password]
 [2026-11-10 22:42:04] MEGA login FAILED for mega_account_35 — account may not exist, be suspended, or have wrong credentials: [2026-11-10_22-42-04.202413 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:53:51] Token for YouTube channel 'channel1' cannot be refreshed (RefreshError) - expired or revoked.
+[2026-11-11 03:53:51] Fix with: python mega_to_youtube.py --authorize-only
+[2026-11-11 03:53:51] No valid YouTube clients available. Run --authorize-only first.
+[2026-11-11 03:54:57] MEGA login FAILED for mega_account_25 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-54-57.856377 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:54:58] MEGA login FAILED for mega_account_26 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-54-58.989716 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:00] MEGA login FAILED for mega_account_27 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-00.706734 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:01] MEGA login FAILED for mega_account_28 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-01.837536 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:03] MEGA login FAILED for mega_account_29 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-03.237654 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:05] MEGA login FAILED for mega_account_30 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-05.359012 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:06] MEGA login FAILED for mega_account_31 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-06.841801 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:08] MEGA login FAILED for mega_account_32 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-08.293369 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:09] MEGA login FAILED for mega_account_33 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-09.580999 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:11] MEGA login FAILED for mega_account_34 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-11.802517 cmd ERR  Login failed: invalid email or password]
+[2026-11-11 03:55:14] MEGA login FAILED for mega_account_35 — account may not exist, be suspended, or have wrong credentials: [2026-11-11_03-55-14.649992 cmd ERR  Login failed: invalid email or password]
